@@ -1,0 +1,15 @@
+<!doctype html><html><head><link rel="stylesheet" href="../tokens.css"><meta charset="utf-8"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"><style>body{margin:0;font-family:var(--font-body);background:linear-gradient(90deg,var(--navy-300),var(--lavender-200));}
+.wrap{display:grid;grid-template-columns:repeat(3,auto);gap:16px 24px;padding:24px;align-items:center;justify-content:start}
+.lbl{font-size:12px;color:var(--text-primary)}
+.btn{display:inline-flex;align-items:center;gap:8px;height:36px;padding:0 20px;border-radius:var(--radius-pill);border:0;font:600 14px/20px var(--font-body);cursor:pointer}
+.glass{background:rgba(255,255,255,.7);color:var(--grey-600);box-shadow:var(--shadow-sm)}
+.navy{background:var(--navy-700);color:var(--white);box-shadow:var(--shadow-md)}
+.orange{background:var(--orange-500);color:var(--brown-900);box-shadow:var(--shadow-md)}
+.round{width:36px;padding:0;justify-content:center}
+.rust{background:var(--rust-700);color:var(--white)}
+.btn:focus-visible{outline:2px solid var(--focus-ring);outline-offset:2px}
+</style></head><body><div class="wrap">
+<span class="lbl">Ask AI</span><button class="btn glass">Ask AI</button><button class="btn navy">Ask AI</button>
+<span class="lbl">New Project</span><button class="btn navy">+ New Project</button><button class="btn orange">+ New Project</button>
+<span class="lbl">Arrow / Menu</span><button class="btn glass round" aria-label="View all">&rarr;</button><button class="btn rust">&#9776; Open Menu</button>
+</div></body></html>

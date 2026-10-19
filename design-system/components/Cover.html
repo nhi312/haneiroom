@@ -1,0 +1,53 @@
+<!doctype html>
+<html>
+<head><link rel="stylesheet" href="../tokens.css">
+<meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400&display=swap" rel="stylesheet">
+<style>
+  html, body { margin: 0; }
+  body { background: var(--bg-page); }
+  .cover { position: relative; width: 960px; height: 288px; overflow: hidden; background: var(--bg-page); }
+  svg { position: absolute; left: 0; top: 0; }
+  .navy { fill: var(--navy-700); }
+  .orange { fill: var(--orange-500); }
+  .rust { fill: var(--rust-600); }
+  .lav { fill: var(--lavender-200); }
+  .peach { fill: var(--peach-100); }
+  .dot { fill: var(--lavender-100); }
+  .slab { rx: var(--radius-xl); }
+  .tile { rx: var(--radius-xl); }
+  .text { position: absolute; left: 48px; bottom: 40px; max-width: 440px; }
+  .name { font-family: var(--font-heading); font-weight: 400; font-size: 72px; line-height: .95; letter-spacing: 0; color: var(--navy-700); margin: 0; }
+  .tag { font-family: var(--font-body); font-size: 14px; line-height: 20px; color: var(--text-muted); margin: 16px 0 0; }
+</style>
+</head>
+<body>
+<div class="cover">
+  <svg width="960" height="288" viewBox="0 0 960 288" aria-hidden="true">
+    <!--
+      blocks: navy-700 slab 208×256 (radius-xl), orange-500 pill 200×96, lavender-200 tile 200×160 (radius-xl), rust-600 disc r40, peach-100 pill 128×32
+      arrangement: one tall slab bleeding off the top with satellites bleeding right and bottom, all right of x=480
+      pattern: soft, friendly, large radii (pill buttons, rounded cards) -> a 3x4 field of pills cut into the navy slab in lavender-100
+      steps and radii: pitch space-12 (48) by space-8 (32), pill 32x16 (radius half the short side), gaps space-6 (24), radius-xl on slab and tile
+      name: set in the heading face (Tropical Palm, the logo face)
+    -->
+    <rect class="navy slab" x="560" y="-32" width="208" height="256"/>
+    <rect class="orange" x="792" y="32" width="200" height="96" rx="48"/>
+    <rect class="lav tile" x="792" y="152" width="200" height="160"/>
+    <circle class="rust" cx="536" cy="232" r="40"/>
+    <rect class="peach" x="600" y="248" width="128" height="32" rx="16"/>
+    <g class="dot">
+      <rect x="592" y="40" width="32" height="16" rx="8"/><rect x="640" y="40" width="32" height="16" rx="8"/><rect x="688" y="40" width="32" height="16" rx="8"/>
+      <rect x="592" y="72" width="32" height="16" rx="8"/><rect x="640" y="72" width="32" height="16" rx="8"/><rect x="688" y="72" width="32" height="16" rx="8"/>
+      <rect x="592" y="104" width="32" height="16" rx="8"/><rect x="640" y="104" width="32" height="16" rx="8"/><rect x="688" y="104" width="32" height="16" rx="8"/>
+      <rect x="592" y="136" width="32" height="16" rx="8"/><rect x="640" y="136" width="32" height="16" rx="8"/><rect x="688" y="136" width="32" height="16" rx="8"/>
+    </g>
+  </svg>
+  <div class="text">
+    <h1 class="name">HaneiRoom</h1>
+    <p class="tag">Your vibe, in your room.</p>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,1 @@
+25 rounded outline icons for the landing page and app UI. 24px grid, 1.75px stroke, round caps and joins, single ink in navy-700 (#253a82). Shown through `<img>`, they can't inherit color; inline the SVG and change `stroke` for another ink. Use with a text label except back, close and search.

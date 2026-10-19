@@ -1,0 +1,1 @@
+The brand's emoji: 9 flat stickers (160px) in brand colors with a brown-900 outline and a white die-cut edge. At most two per section, 64 to 160px, tilted up to 12°. For moments of delight only, never in forms, tables or navigation. The woohoo bubble sets its word in Lexend, falling back to Arial Black.

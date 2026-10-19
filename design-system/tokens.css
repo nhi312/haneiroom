@@ -1,0 +1,89 @@
+/* HaneiRoom design tokens, generated from tokens.json */
+/* Trovical Calm (Befonts). The bundled files are the free "personal use only"
+   release: buy a commercial/web license before shipping. See fonts/LICENSE-trovical-calm.txt
+   The free release draws "." as a Befonts watermark, so U+002E is left out of
+   unicode-range and falls back to the next font. Drop that gap with the licensed files. */
+@font-face {
+  font-family: "Trovical Calm";
+  src: url("fonts/trovical-calm-regular.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-002D, U+002F-10FFFF;
+}
+@font-face {
+  font-family: "Trovical Calm";
+  src: url("fonts/trovical-calm-italic.otf") format("opentype");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+  unicode-range: U+0000-002D, U+002F-10FFFF;
+}
+:root {
+  --navy-700: #253a82;
+  --navy-300: #93a4de;
+  --orange-500: #ff912c;
+  --orange-300: #fcc490;
+  --rust-600: #a85a22;
+  --brown-900: #3b2a14;
+  --lavender-100: #e6e7f8;
+  --lavender-200: #d5d8f2;
+  --peach-100: #fbe3cc;
+  --grey-100: #e4e4e4;
+  --grey-300: #c9c9c9;
+  --grey-600: #5c5c5c;
+  --ink-900: #1e1e1e;
+  --white: #ffffff;
+  --green-500: #5db85b;
+  --red-500: #e04545;
+  --red-700: #8f2a22;
+  --red-100: #f8c9c9;
+  --palm-600: #3f7a4e;
+  --palm-300: #7fb07a;
+  --logo-navy: #273d93;
+  --logo-orange: #d67a31;
+  --rust-700: #933519;
+  --text-primary: var(--ink-900);
+  --text-heading: var(--navy-700);
+  --text-accent: var(--rust-600);
+  --text-highlight: var(--orange-500);
+  --text-muted: var(--grey-600);
+  --bg-page: var(--grey-100);
+  --surface-card: var(--white);
+  --surface-tint: var(--lavender-100);
+  --action-primary: var(--orange-500);
+  --on-action-primary: var(--brown-900);
+  --action-secondary: var(--navy-700);
+  --focus-ring: var(--navy-700);
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-24: 96px;
+  --space-32: 128px;
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
+  --radius-pill: 999px;
+  --shadow-sm: 0 2px 6px rgba(30, 30, 60, 0.08);
+  --shadow-md: 0 8px 24px rgba(30, 30, 60, 0.12);
+  --shadow-lg: 0 24px 48px rgba(30, 30, 60, 0.16);
+  --font-heading: "Trovical Calm", "Playfair Display", Georgia, serif;
+  --font-body: Inter, system-ui, sans-serif;
+}
+/* Trovical Calm (free build) fuses "oo" into a watermarked ligature: keep ligatures off on titles. */
+.display, .h1, .h2 { font-variant-ligatures: none; font-feature-settings: "liga" 0, "dlig" 0; }
+.display { font-family: var(--font-heading); font-size: 72px; line-height: 76px; font-weight: 400; }
+.h1 { font-family: var(--font-heading); font-size: 56px; line-height: 62px; font-weight: 400; }
+.h2 { font-family: var(--font-heading); font-size: 40px; line-height: 48px; font-weight: 400; }
+.h3 { font-family: var(--font-body); font-size: 24px; line-height: 32px; font-weight: 700; }
+.body-lg { font-family: var(--font-body); font-size: 20px; line-height: 30px; font-weight: 400; }
+.body { font-family: var(--font-body); font-size: 16px; line-height: 24px; font-weight: 400; }
+.label { font-family: var(--font-body); font-size: 16px; line-height: 20px; font-weight: 600; }
+.small { font-family: var(--font-body); font-size: 14px; line-height: 20px; font-weight: 400; }
+.caption { font-family: var(--font-body); font-size: 12px; line-height: 16px; font-weight: 500; }
