@@ -192,8 +192,8 @@
   var aroundHead = $('[data-around]');
   var gallery = $('.gallery'), stage = $('.gallery__stage');
   var inner = $('.frame__inner'), ui = $('.app__ui');
-  var phone = $('.phone'), thenNote = $('.tag-note--then'), nowNote = $('.tag-note--now');
-  var G = null, galTop = 0, galH = 0;
+  var scan = $('.scan'), thenNote = $('.tag-note--then'), nowNote = $('.tag-note--now');
+  var G = null, galTop = 0, galH = 0, panAmp = 3;
 
   function uiWidth() {
     var w = parseFloat(getComputedStyle(inner).getPropertyValue('--ui-w')) || 1000;
@@ -201,8 +201,14 @@
   }
 
   function layoutGallery() {
-    [stage, phone, thenNote, nowNote, ui].forEach(function (el) { el.removeAttribute('style'); });
+    [stage, scan, thenNote, nowNote, ui].forEach(function (el) { el.removeAttribute('style'); });
     G = null;
+    // The room photo covers the screen. A wide screen sees nearly all of it, so the
+    // camera only drifts; a phone sees a third, so it sweeps from the door to the window.
+    var W = Math.max(vw, vh * 1264 / 843);
+    panAmp = Math.max(3, (W - vw) / 2 / W * 80);
+    // the plane and its arrows span half the photo; keep them clear of the tool rail
+    scan.style.setProperty('--fit', Math.min(1, vw * .84 / (W * .495)).toFixed(3));
     if (!pinned()) {
       ui.style.setProperty('--ui-s', (inner.clientWidth / uiWidth()).toFixed(4));
       return;
@@ -213,19 +219,15 @@
     var fw1 = Math.min(vw * (vw < 1280 ? .54 : .58), 980), fh1 = fw1 * .625;
     if (fh1 + 2 * b > avail) { fh1 = avail - 2 * b; fw1 = fh1 / .625; }
     var side = (vw - fw1 - 2 * b) / 2;
-    var pw1 = clamp(side - 64, 110, 190);
     var cy = top + (vh - top) / 2;
-    G = {
-      fw0: fw0, fh0: fh0, fw1: fw1, fh1: fh1,
-      ps1: pw1 / fw0, px1: -(fw1 / 2 + b + side / 2) + 6
-    };
+    G = { fw0: fw0, fh0: fh0, fw1: fw1, fh1: fh1, cy: cy };
     stage.style.setProperty('--cy', cy.toFixed(0) + 'px');
-    phone.style.setProperty('--pw', fw0.toFixed(1));
 
     var noteW = clamp(side - 28, 150, 240);
     thenNote.style.width = noteW + 'px';
-    thenNote.style.left = (vw / 2 + G.px1 - noteW / 2).toFixed(0) + 'px';
-    thenNote.style.top = (cy + fh0 * G.ps1 / 2 + 22).toFixed(0) + 'px';
+    // left of the phone, below the palette; the chair card sits on its right
+    thenNote.style.left = (vw / 2 - fw0 / 2 - b - 40 - noteW).toFixed(0) + 'px';
+    thenNote.style.top = (cy + 20).toFixed(0) + 'px';
     var nowW = clamp(side + 20, 170, 250);
     nowNote.style.width = nowW + 'px';
     nowNote.style.left = (vw / 2 + fw1 / 2 + b - 44).toFixed(0) + 'px';
@@ -234,38 +236,32 @@
     galH = gallery.offsetHeight;
   }
 
-  /* The v1 scan plays inside the phone, then the app makes a project. Both run
-     from a 0..1 progress, so the same code serves the pinned frame and the stack. */
-  var wires = $$('.ar__wire'), status = $('[data-status]');
+  /* HaneiRoom's scan plays across the screen, then Hanei makes a project. Both run
+     from a 0..1 progress, so the same code serves the pinned stage and the stack. */
+  var status = $('[data-status]');
   var proj = $('[data-proj]'), projSw = $$('.proj__sw i', proj);
   var projStatus = $('[data-status-done]', proj);
 
-  // Kreativ-style: pan to capture the room, map it, pick a piece, place it, move and turn it, buy it.
-  function playScan(p) {
-    var sweep = ramp(p, .04, .3), turn = ease(ramp(p, .68, .82)), face = Math.cos(turn * Math.PI);
-    setVars(phone, {
-      pan: Math.sin(sweep * Math.PI * 2) * 5,
-      cap: ramp(p, .02, .06) * (1 - ramp(p, .3, .34)),
-      prog: sweep,
-      frame: ramp(p, .02, .08) * (1 - ramp(p, .84, .92)),
-      status: ramp(p, .02, .08),
-      mesh: ramp(p, .28, .32) * (1 - .7 * ramp(p, .84, .94)),
-      pins: ramp(p, .4, .46) * (1 - ramp(p, .84, .92)),
-      sheet: ease(ramp(p, .46, .52)) * (1 - ease(ramp(p, .57, .62))),
-      tap: ramp(p, .52, .55) * (1 - ramp(p, .57, .6)),
-      ghost: ramp(p, .58, .62),
-      chair: easeBack(ramp(p, .6, .68)),
-      mx: lerp(-16, 0, ease(ramp(p, .68, .8))),
-      face: (face < 0 ? -1 : 1) * Math.max(Math.abs(face), .3),
-      turnui: ramp(p, .66, .7) * (1 - ramp(p, .82, .86)),
-      spin: turn * 40,
-      buy: ramp(p, .86, .92)
+  // Scan the room, find the floor, measure it, pick the chair, place that same chair.
+  // `hide` fades the phone's own controls once the view shrinks into a phone.
+  function playScan(p, hide) {
+    var sweep = ramp(p, .04, .4), keep = 1 - (hide || 0);
+    setVars(scan, {
+      ui: ramp(p, 0, .06) * keep,
+      pan: Math.sin(sweep * Math.PI * 2) * panAmp,
+      zoom: lerp(1.08, 1, ease(ramp(p, .34, .46))),
+      floor: ease(ramp(p, .38, .5)),
+      outline: ramp(p, .42, .54),
+      dims: easeBack(ramp(p, .5, .56)),
+      marker: ramp(p, .56, .6) * (1 - ramp(p, .8, .84)),
+      place: ramp(p, .58, .62) * (1 - ramp(p, .66, .7)),
+      sheet: ease(ramp(p, .66, .72)) * (1 - ease(ramp(p, .78, .82))),
+      tap: ramp(p, .74, .76) * (1 - ramp(p, .78, .8)),
+      chair: easeBack(ramp(p, .82, .9)),
+      foot: ramp(p, .86, .92),
+      buy: ramp(p, .9, .95) * keep
     });
-    var d = ramp(p, .28, .46);
-    wires.forEach(function (w, i) { w.style.strokeDashoffset = (1 - ramp(d, i * .3, i * .3 + .7)).toFixed(3); });
-    status.textContent = p < .3 ? 'Move around to scan the room' : p < .46 ? 'Room mapped' : p < .6 ? 'Pick a piece to try'
-      : p < .84 ? 'Move it, turn it' : 'Looks right? Buy the exact piece.';
-    phone.classList.toggle('is-placed', p > .86);
+    status.textContent = p < .38 ? 'Scanning your space…' : p < .66 ? 'Floor found' : p < .86 ? 'Pick a piece' : 'Looks right?';
   }
 
   function playApp(p) {
@@ -284,28 +280,30 @@
 
   function updateGallery() {
     if (!G) {
-      // stacked: each demo plays as it crosses the screen
-      var ph = phone.getBoundingClientRect(), fr = inner.getBoundingClientRect();
-      playScan(clamp((vh * .85 - ph.top) / (ph.height + vh * .25), 0, 1));
+      // stacked: the scan pins on its own, then the app plays as it crosses the screen
+      var sr = scan.getBoundingClientRect(), fr = inner.getBoundingClientRect();
+      playScan(clamp(-sr.top / Math.max(sr.height - vh, 1), 0, 1));
       playApp(clamp((vh * .9 - fr.top) / (fr.height + vh * .35), 0, 1));
       return;
     }
     var p = clamp((window.scrollY - galTop) / (galH - vh), 0, 1);
-    var m = ease(ramp(p, .46, .66)), t = ease(ramp(p, .44, .6));
+    // the camera view shrinks into a phone, then the phone widens into the desktop
+    var k = ease(ramp(p, .62, .7)), m = ease(ramp(p, .74, .86));
     var fw = lerp(G.fw0, G.fw1, m), fh = lerp(G.fh0, G.fh1, m);
     stage.style.setProperty('--fw', fw.toFixed(1));
     stage.style.setProperty('--fh', fh.toFixed(1));
+    setVars(stage, { fo: ramp(p, .64, .7), head: ramp(p, .68, .74) });
     ui.style.setProperty('--ui-s', (fw / 1000).toFixed(4));
-    ui.style.setProperty('--ui-o', ramp(p, .5, .64).toFixed(3));
-    phone.style.setProperty('--px', (G.px1 * t).toFixed(1));
-    phone.style.setProperty('--pr', (-6 * t).toFixed(2));
-    phone.style.setProperty('--ps', lerp(1, G.ps1, t).toFixed(4));
-    phone.style.setProperty('--tape-o', ramp(p, .54, .6).toFixed(3));
-    thenNote.style.setProperty('--o', ramp(p, .58, .68).toFixed(3));
-    nowNote.style.setProperty('--o', ramp(p, .9, .97).toFixed(3));
-    stage.classList.toggle('is-now', p > .52);
-    playScan(ramp(p, .02, .42));
-    playApp(ramp(p, .66, .96));
+    ui.style.setProperty('--ui-o', ramp(p, .8, .88).toFixed(3));
+    playScan(ramp(p, .02, .55), ramp(p, .6, .64));
+    setVars(scan, {
+      ct: k * (G.cy - fh / 2), cx: k * (vw - fw) / 2, cb: k * (vh - G.cy - fh / 2), cr: k * 24,
+      so: 1 - ramp(p, .76, .84)
+    });
+    thenNote.style.setProperty('--o', (ramp(p, .7, .74) * (1 - ramp(p, .75, .79))).toFixed(3));
+    nowNote.style.setProperty('--o', ramp(p, .92, .97).toFixed(3));
+    stage.classList.toggle('is-now', p > .78);
+    playApp(ramp(p, .87, .98));
   }
 
   var venn = $('.venn');
@@ -428,10 +426,8 @@
       // these carry their own layout inline, so only clear what the animation set
       flyers.forEach(function (el) { el.style.transform = ''; el.style.opacity = ''; });
       projSw.forEach(function (el) { el.style.removeProperty('--sw'); });
-      wires.forEach(function (w) { w.removeAttribute('style'); });
-      phone.classList.remove('is-placed');
       stage.classList.remove('is-now');
-      status.textContent = 'Looks right? Buy the exact piece.';
+      status.textContent = 'Looks right?';
       projStatus.textContent = 'Status: Done';
     }
     measure();

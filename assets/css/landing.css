@@ -479,60 +479,122 @@ a { color: inherit; }
 .app__cursor { position: absolute; z-index: 5; left: 0; top: 0; width: 30px; translate: calc(var(--cx, 60) * 1px) calc(var(--cy, 150) * 1px); opacity: var(--co, 0); }
 .app__cursor svg { display: block; width: 100%; fill: var(--ink-900); stroke: var(--white); stroke-width: 1.5; stroke-linejoin: round; }
 
-.phone { position: relative; z-index: 4; }
-.phone__screen { position: relative; aspect-ratio: 393 / 852; overflow: hidden; border-radius: 9% / 4.2%; background: var(--peach-100); box-shadow: 0 0 0 6px var(--ink-900), var(--shadow-lg); container-type: inline-size; }
-.phone__screen > .art { position: absolute; inset: 0; width: 100%; height: 100%; }
-/* the v1 AR demo, driven by scroll (landing.js sets the vars on .phone).
-   .ar__world is the camera view: it pans while scanning and holds the chair. */
-.ar__world { position: absolute; inset: 0; transform: translateX(calc(var(--pan, 0) * 1%)) scale(1.12); }
-.ar__world > .art { position: absolute; inset: 0; width: 100%; height: 100%; }
-.room-piece { position: absolute; left: calc(var(--l) * 1%); top: calc(var(--t) * 1%); width: calc(var(--w) * 1%); }
-.ar__mesh { position: absolute; inset: 0; width: 100%; height: 100%; opacity: var(--mesh, 0); }
-.ar__wire { fill: none; stroke: var(--white); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1; }
-.scan__pins circle { fill: var(--orange-500); stroke: var(--white); stroke-width: 3; opacity: var(--pins, 0); }
-
-.ar__piece {
-  position: absolute; left: calc(50% + var(--mx, 0) * 1%); top: 87%; width: 48%; aspect-ratio: 190 / 52;
-  translate: -50% -50%; opacity: var(--ghost, 1);
+/* HaneiRoom's AR scan, driven by scroll (landing.js sets the vars on .scan).
+   The room fills the screen like the camera view. Every var falls back to the
+   finished state, so without motion the chair is already placed. */
+.scan { position: relative; z-index: 4; margin: 0; --scan-top: 92px; }
+.scan__view { position: relative; height: 100%; overflow: hidden; background: #ead9c4; container-type: size; }
+.scan__world {
+  --u: calc(max(100cqw, 150cqh) / 100); /* 1% of the room photo's width */
+  position: absolute; left: 50%; top: 50%; width: calc(var(--u) * 100); aspect-ratio: 1264 / 843;
+  transform: translate(-50%, -50%) translateX(calc(var(--pan, 0) * 1%)) scale(var(--zoom, 1));
 }
-.scan__ring { position: absolute; inset: 0; border: 3px dashed var(--white); border-radius: 50%; background: rgba(255, 255, 255, .22); }
-.ar__turn { position: absolute; left: -12%; top: -20%; width: 124%; fill: none; stroke: var(--orange-500); stroke-width: 5; stroke-linecap: round; opacity: var(--turnui, 0); rotate: calc(var(--spin, 0) * 1deg); }
+.scan__room, .scan__floor { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; }
+/* everything standing on the floor; scaled down around the plane when a narrow screen would cut it off */
+.scan__anchor { position: absolute; inset: 0; transform-origin: 48.4% 69%; scale: var(--fit, 1); }
+.scan__plane { clip-path: circle(calc(var(--floor, 1) * 32%) at 48.4% 69%) view-box; }
+.scan__fill { fill: rgba(160, 150, 235, .46); opacity: calc(1 - var(--foot, 1) * .45); }
+.scan__grid { fill: none; stroke: rgba(255, 255, 255, .6); stroke-width: 1.5; opacity: calc(1 - var(--foot, 1) * .75); }
+.scan__edge { fill: none; stroke: var(--white); stroke-width: 3; stroke-dasharray: 12 9; stroke-linecap: round; stroke-linejoin: round; opacity: calc(1 - var(--foot, 1) * .3); }
+.scan__draw { fill: none; stroke: var(--white); stroke-width: 16; stroke-dasharray: 1; stroke-dashoffset: calc(1 - var(--outline, 1)); }
+.scan__arrows { fill: none; stroke: var(--white); stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; opacity: var(--dims, 1); }
+
+/* glass, iPhone style */
+.scan__pill, .scan__dim, .scan__close, .scan__rail, .scan__sheet {
+  background: var(--lg-fill); border: 1px solid var(--lg-edge); box-shadow: var(--lg-shadow);
+  -webkit-backdrop-filter: var(--lg-blur); backdrop-filter: var(--lg-blur); color: var(--navy-700);
+}
+.scan__pill svg, .scan__rail svg, .scan__marker svg { fill: none; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
+
+.scan__dim {
+  position: absolute; translate: -50% -50%; padding: 3px 12px; border-radius: var(--radius-pill);
+  font: 700 15px/20px var(--font-body); white-space: nowrap; opacity: var(--dims, 1); scale: calc((.6 + var(--dims, 1) * .4) / var(--fit, 1));
+}
+.scan__dim--d { left: 28.5%; top: 66.1%; }
+.scan__dim--w { left: 68.4%; top: 66.1%; }
+.scan__marker {
+  position: absolute; left: 48.4%; top: 66%; display: flex; align-items: center; color: var(--white);
+  translate: -50% -50%; opacity: var(--marker, 0); scale: calc(.7 + var(--marker, 0) * .3);
+}
+.scan__marker svg { width: calc(var(--u) * 4.4); stroke-width: 1.4; filter: drop-shadow(0 1px 2px rgba(30, 30, 60, .3)); }
+.scan__marker svg + svg { width: calc(var(--u) * 3); }
+.scan__shadow {
+  position: absolute; left: 48.6%; top: 69.6%; width: 11.5%; height: 2.6%; translate: -50% -50%; border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(59, 42, 20, .42), rgba(59, 42, 20, 0)); opacity: var(--chair, 1);
+}
 .scan__chair {
-  position: absolute; left: 50%; bottom: 46%; width: 92%; max-width: none;
-  translate: -50% calc((1 - var(--chair, 1)) * -45%); scale: calc(var(--face, 1) * (.85 + var(--chair, 1) * .15)) calc(.85 + var(--chair, 1) * .15);
-  opacity: var(--chair, 1); transform-origin: 50% 100%;
-  filter: drop-shadow(0 10px 8px rgba(59, 42, 20, .32));
+  position: absolute; left: 48.4%; top: 70%; width: 10.5%; max-width: none; transform-origin: 50% 100%;
+  translate: -50% calc(-97% - (1 - var(--chair, 1)) * 30%); scale: calc(.7 + var(--chair, 1) * .3);
+  opacity: clamp(0, var(--chair, 1) * 3, 1); filter: drop-shadow(0 4px 4px rgba(59, 42, 20, .25));
 }
-.scan__dims { position: absolute; left: 50%; top: 100%; translate: -50% 4px; padding: 3px 10px; border-radius: var(--radius-pill); background: var(--white); color: var(--navy-700); font: 800 clamp(9px, 3.6cqw, 14px)/1.2 var(--font-body); white-space: nowrap; }
-.motion .phone.is-placed .scan__dims { animation: wiggle 5.5s ease-in-out infinite 1s; }
 
-.scan__bracket { position: absolute; width: 18%; aspect-ratio: 1; border: 4px solid var(--white); opacity: var(--frame, 0); scale: calc(1.2 - var(--frame, 0) * .2); }
-.scan__bracket--tl { left: 7%; top: 9%; border-right: 0; border-bottom: 0; border-radius: 20px 0 0 0; }
-.scan__bracket--tr { right: 7%; top: 9%; border-left: 0; border-bottom: 0; border-radius: 0 20px 0 0; }
-.scan__bracket--bl { left: 7%; bottom: 4%; border-right: 0; border-top: 0; border-radius: 0 0 0 20px; }
-.scan__bracket--br { right: 7%; bottom: 4%; border-left: 0; border-top: 0; border-radius: 0 0 20px 0; }
-.ar__capture { position: absolute; left: 50%; top: 45%; width: 20%; translate: -50% -50%; opacity: var(--cap, 0); }
-.ar__capture circle { fill: rgba(30, 30, 30, .25); stroke: rgba(255, 255, 255, .5); stroke-width: 4; }
-.ar__capture .ar__progress { fill: none; stroke: var(--orange-300); stroke-width: 5; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: calc(1 - var(--prog, 1)); rotate: -90deg; transform-origin: center; }
-.scan__status {
-  position: absolute; left: 50%; top: 5%; translate: -50% 0; max-width: 88%; padding: 6px 14px; border-radius: var(--radius-pill);
-  background: rgba(30, 30, 30, .6); color: var(--white); text-align: center;
-  font: 700 clamp(9px, 3.6cqw, 14px)/1.25 var(--font-body);
-  opacity: var(--status, 1); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+.scan__bracket {
+  position: absolute; width: clamp(44px, 7cqw, 92px); aspect-ratio: 1; border: 4px solid var(--white);
+  opacity: var(--ui, 1); filter: drop-shadow(0 1px 3px rgba(30, 30, 60, .2));
 }
-/* the v1 product page slides up so Try in AR can be tapped */
-.ar__sheet {
-  position: absolute; left: 0; right: 0; bottom: 0; padding: 8px 8px 0; border-radius: 22px 22px 0 0; background: var(--white);
-  box-shadow: 0 -10px 30px rgba(30, 30, 60, .25); translate: 0 calc((1 - var(--sheet, 0)) * 105%);
+.scan__bracket--tl { left: 13%; top: calc(var(--scan-top) + 72px); border-right: 0; border-bottom: 0; border-radius: 22px 0 0 0; }
+.scan__bracket--tr { right: 13%; top: calc(var(--scan-top) + 72px); border-left: 0; border-bottom: 0; border-radius: 0 22px 0 0; }
+.scan__bracket--bl { left: 13%; bottom: 20%; border-right: 0; border-top: 0; border-radius: 0 0 0 22px; }
+.scan__bracket--br { right: 13%; bottom: 20%; border-left: 0; border-top: 0; border-radius: 0 0 22px 0; }
+.scan__close {
+  position: absolute; left: 24px; top: var(--scan-top); display: grid; place-items: center; width: 52px; height: 40px;
+  border-radius: var(--radius-pill); opacity: var(--ui, 1);
 }
-.ar__sheet img { width: 100%; aspect-ratio: 393 / 440; object-fit: cover; object-position: 50% 32%; border-radius: 16px 16px 0 0; }
-.ar__tap { position: absolute; left: 50%; top: 92%; width: 18%; aspect-ratio: 1; translate: -50% -50%; border-radius: 50%; border: 3px solid var(--orange-500); background: rgba(255, 145, 44, .3); opacity: var(--tap, 0); scale: calc(.5 + var(--tap, 0) * .8); }
-.ar__buy {
-  position: absolute; left: 50%; top: 12.5%; translate: -50% calc((1 - var(--buy, 1)) * -20px); opacity: var(--buy, 1); white-space: nowrap;
-  padding: 10px 18px; border-radius: var(--radius-pill); background: var(--orange-500); color: var(--brown-900); box-shadow: var(--shadow-md);
-  font: 700 clamp(10px, 3.8cqw, 15px)/1.2 var(--font-body);
+.scan__pill {
+  position: absolute; left: 50%; display: flex; align-items: center; gap: 10px; padding: 10px 22px; translate: -50% 0;
+  border-radius: var(--radius-pill); font: 600 17px/22px var(--font-body); white-space: nowrap;
 }
-.phone__tape { position: absolute; z-index: 1; left: 50%; top: -14px; width: 42%; height: 30px; translate: -50% 0; rotate: -4deg; background: rgba(252, 196, 144, .85); opacity: var(--tape-o, 1); }
+.scan__pill svg { width: 24px; flex: none; }
+.scan__pill--top { top: var(--scan-top); opacity: var(--ui, 1); }
+.scan__pill--place { bottom: 8%; padding-left: 16px; opacity: var(--place, 0); translate: -50% calc((1 - var(--place, 0)) * 12px); }
+.scan__pill--buy {
+  bottom: 8%; padding: 12px 26px; opacity: var(--buy, 1); translate: -50% calc((1 - var(--buy, 1)) * 12px);
+  background: linear-gradient(180deg, rgba(255, 196, 140, .95), rgba(255, 145, 44, .82)); color: var(--brown-900); font-weight: 700;
+}
+.scan__rail {
+  position: absolute; right: 24px; top: 50%; display: grid; gap: 20px; padding: 18px 12px; translate: 0 -50%;
+  border-radius: var(--radius-pill); opacity: var(--ui, 1);
+}
+.scan__rail svg { width: 26px; }
+.scan__rec { fill: currentColor; }
+
+/* the product sheet slides up so Try in AR can be tapped */
+.scan__sheet {
+  position: absolute; left: 50%; bottom: 16px; width: min(380px, calc(100% - 32px)); padding: 10px 16px 16px; border-radius: 30px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, .9), rgba(255, 255, 255, .7));
+  translate: -50% calc((1 - var(--sheet, 0)) * 120%); opacity: min(1, calc(var(--sheet, 0) * 4));
+}
+.scan__grab { display: block; width: 40px; height: 5px; margin: 0 auto 12px; border-radius: 3px; background: rgba(30, 30, 60, .2); }
+.scan__item { display: grid; grid-template-columns: 96px 1fr; align-items: center; gap: 14px; }
+.scan__thumb { display: block; aspect-ratio: 1; padding: 8px; border-radius: 20px; background: var(--peach-100); }
+.scan__thumb img { width: 100%; height: 100%; object-fit: contain; }
+.scan__item b { display: block; font: 700 18px/24px var(--font-body); color: var(--ink-900); }
+.scan__item small { display: block; margin-top: 2px; font: 400 14px/20px var(--font-body); color: var(--grey-600, #6b6b6b); }
+.scan__try {
+  position: relative; display: block; margin-top: 14px; padding: 12px; border-radius: var(--radius-pill); text-align: center;
+  background: linear-gradient(180deg, rgba(255, 196, 140, .95), rgba(255, 145, 44, .82)); border: 1px solid var(--lg-edge);
+  box-shadow: var(--lg-shadow); color: var(--brown-900); font: 700 16px/22px var(--font-body); scale: calc(1 - var(--tap, 0) * .05);
+}
+.scan__tap {
+  position: absolute; left: 50%; top: 50%; width: 46px; aspect-ratio: 1; translate: -50% -50%; border-radius: 50%;
+  background: rgba(255, 255, 255, .55); opacity: var(--tap, 0); scale: calc(.4 + var(--tap, 0) * .8);
+}
+.gallery__bg { display: none; }
+@media (max-width: 767px) {
+  .scan { --scan-top: 84px; }
+  .scan__pill { gap: 8px; padding: 8px 16px; font-size: 15px; line-height: 20px; }
+  .scan__pill svg { width: 20px; }
+  .scan__close { left: 12px; width: 44px; height: 36px; }
+  .scan__close img { width: 20px; height: 20px; }
+  .scan__rail { right: 12px; gap: 14px; padding: 14px 9px; }
+  .scan__rail svg { width: 22px; }
+  .scan__bracket { width: 48px; border-width: 3px; }
+  .scan__bracket--tl, .scan__bracket--bl { left: 9%; }
+  .scan__bracket--tr, .scan__bracket--br { right: 9%; }
+  .scan__bracket--tl, .scan__bracket--tr { top: calc(var(--scan-top) + 60px); }
+  .scan__dim { padding: 2px 10px; font-size: 13px; line-height: 18px; }
+  .scan__item { grid-template-columns: 80px 1fr; }
+}
 
 .tag-note { position: relative; z-index: 5; width: 240px; padding: 14px 16px; background: var(--white); box-shadow: var(--shadow-md); font-size: 14px; line-height: 20px; rotate: -2deg; }
 .tag-note--now { rotate: 2deg; }
@@ -543,13 +605,18 @@ a { color: inherit; }
 .collage--palette { display: none; grid-template-columns: repeat(3, 1fr); gap: 6px; width: 150px; padding: 12px; background: var(--white); box-shadow: var(--shadow-md); }
 .collage--palette i { aspect-ratio: 1.3; }
 
-/* large screens: the frame turns from the phone into the desktop as you scroll */
-.pin .gallery { height: 480vh; }
+/* large screens: the scan fills the screen, shrinks into a phone, and the phone
+   widens into the desktop over the blurred room */
+.pin .gallery { height: 640vh; }
 .pin .gallery__stage { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; }
-.pin .frame, .pin .phone, .pin .collage { position: absolute; left: 50%; top: var(--cy, 50%); }
+.pin .frame, .pin .collage { position: absolute; left: 50%; top: var(--cy, 50%); opacity: var(--fo, 1); }
+.pin .gallery__bg { display: block; position: absolute; inset: -40px; filter: blur(calc(var(--bgb, 16) * 1px)) saturate(1.1); }
+.pin .gallery__bg::after { content: ""; position: absolute; inset: 0; background: rgba(250, 244, 234, var(--veil, .4)); }
+.gallery__bg img { width: 100%; height: 100%; object-fit: cover; }
+.pin .scan { position: absolute; inset: 0; opacity: var(--so, 1); clip-path: inset(calc(var(--ct, 0) * 1px) calc(var(--cx, 0) * 1px) calc(var(--cb, 0) * 1px) round calc(var(--cr, 0) * 1px)); }
+.pin .scan__view { position: absolute; inset: 0; }
 .pin .frame { width: calc(var(--fw, 300) * 1px + var(--b) * 2); height: calc(var(--fh, 560) * 1px + var(--b) * 2); translate: -50% -50%; }
 .pin .app__ui { opacity: var(--ui-o, 1); }
-.pin .phone { width: calc(var(--pw, 300) * 1px); translate: -50% -50%; transform: translateX(calc(var(--px, 0) * 1px)) rotate(calc(var(--pr, 0) * 1deg)) scale(var(--ps, 1)); }
 .pin .tag-note { position: absolute; opacity: var(--o, 1); }
 .pin .collage { display: block; }
 .pin .collage--palette { display: grid; }
@@ -557,9 +624,12 @@ a { color: inherit; }
 .pin .collage--card { width: 150px; translate: calc(var(--fw, 300) * .5px - 50px) calc(var(--fh, 560) * .5px - 210px); rotate: 7deg; }
 .pin .collage--sheet { width: 230px; translate: calc(var(--fw, 300) * .5px - 40px) calc(var(--fh, 560) * -.5px - 70px); rotate: 8deg; }
 
-/* every other screen: phone, then the desktop, stacked */
+/* every other screen: the scan pins on its own, then the desktop follows */
 html:not(.pin) .gallery__stage { display: flex; flex-direction: column; align-items: center; gap: var(--space-8); padding: 0 var(--space-4); }
-html:not(.pin) .phone { width: min(250px, 62vw); rotate: -3deg; }
+html:not(.pin) .scan { align-self: stretch; margin: 0 calc(var(--space-4) * -1); height: 320vh; height: 320svh; }
+html:not(.pin) .scan__view { position: sticky; top: 0; height: 100vh; height: 100svh; }
+html.rm .scan { height: auto; }
+html.rm .scan__view { position: relative; height: min(88vh, 780px); }
 html:not(.pin) .tag-note { width: min(320px, 100%); }
 html:not(.pin) .tag-note--then { order: 1; margin-top: -8px; }
 html:not(.pin) .frame { order: 2; width: min(960px, 100%); margin-top: var(--space-8); padding: var(--b); }
@@ -621,15 +691,6 @@ html:not(.pin) .tag-note--now { order: 3; margin-top: -12px; }
 .demo__form input[aria-invalid="true"] { border-color: var(--red-700); }
 .demo__msg { flex-basis: 100%; min-height: 20px; font: 600 14px/20px var(--font-body); color: var(--navy-700); }
 .demo__msg.is-error { color: var(--red-700); }
-.demo__note {
-  position: absolute; z-index: 2; padding: 14px 18px 16px; box-shadow: var(--shadow-md);
-  font: 700 24px/1.05 var(--font-hand); color: var(--brown-900); background: var(--orange-300);
-}
-.demo__note::before { content: ""; position: absolute; left: 30%; top: -10px; width: 40%; height: 20px; background: rgba(255, 255, 255, .7); rotate: -4deg; }
-.demo__note--a { left: -28px; top: 40px; rotate: -8deg; --r: -8; }
-.demo__note--b { right: -24px; bottom: 56px; rotate: 6deg; --r: 6; background: var(--peach-100); }
-.motion .demo__note { animation: wiggle 6s ease-in-out infinite; }
-.motion .demo__note--b { animation-delay: 2.5s; }
 
 /* ------------------------------------------------------------ footer */
 .foot { position: relative; z-index: 3; background: var(--cream-50); border-top: 2px solid var(--navy-700); }
@@ -772,9 +833,6 @@ html:not(.pin) .tag-note--now { order: 3; margin-top: -12px; }
 
   .demo { padding: 96px var(--space-4); }
   .demo__box { padding: var(--space-12) 0 var(--space-8); }
-  .demo__note { font-size: 19px; padding: 10px 12px 12px; }
-  .demo__note--a { left: -8px; top: -26px; }
-  .demo__note--b { right: -6px; bottom: -28px; }
   .demo__row li { font-size: 14px; padding: 8px 14px 8px 8px; }
   .demo__row li img, .demo__row li i { width: 36px; height: 36px; padding: 8px; }
 
