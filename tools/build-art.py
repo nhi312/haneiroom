@@ -355,8 +355,6 @@ def _(a):
     a.line([(872, 96), (874, 548)], SKY, 3.5, j=1.2)
     a.line([(860, 96), (884, 96)], SKY, 3.5, j=0.5)
     a.line([(862, 548), (886, 548)], SKY, 3.5, j=0.5)
-    a.line([(938, 300), (880, 262), (806, 270)], NAVY, 3.5, j=1.2)
-    a.line([(826, 254), (804, 270), (828, 284)], NAVY, 3.5, j=0.6)
 
 
 # ---------------------------------------------------------------- the process
@@ -451,6 +449,51 @@ def _(a):
     a.text(100, 30, "chair? 60 cm", 15, APRICOT)
 
 
+# ---------------------------------------------------------- demo backdrop
+
+@art("flower", 220, 220)
+def _(a):
+    for i in range(5):
+        ang = math.radians(-90 + i * 72)
+        a.leaf((110, 110), (110 + math.cos(ang) * 104, 110 + math.sin(ang) * 104), 42, ORANGE, bend=4)
+    a.oval(110, 110, 30, 30, APRICOT)
+
+
+@art("leaves", 300, 280)
+def _(a):
+    for tip, w, c in (((20, 70), 34, PALM), ((120, 6), 32, PALM), ((236, 34), 36, PALM),
+                      ((292, 150), 30, PALM3), ((40, 196), 26, PALM3)):
+        a.leaf((160, 270), tip, w, c, bend=14)
+    for tip in ((70, 120), (140, 70), (220, 92)):
+        a.line([(160, 262), tip], PALM3, 3, j=0.6)
+
+
+@art("blob", 240, 210)
+def _(a):
+    a.oval(120, 106, 104, 86, APRICOT, j=0.1, k=10)
+    a.oval(160, 92, 20, 20, ORANGE, k=10)
+
+
+# ---------------------------------------------------------- the v1 AR scan
+
+@art("scan-room", 390, 844, "art--room")
+def _(a):
+    a.poly([(0, 0), (390, 0), (320, 150), (70, 150)], LAV1, j=0.6, seg=80)
+    a.poly([(0, 0), (70, 150), (70, 470), (0, 590)], LAV2, j=0.6, seg=80)
+    a.poly([(390, 0), (320, 150), (320, 470), (390, 590)], LAV2, j=0.6, seg=80)
+    a.poly([(70, 150), (320, 150), (320, 470), (70, 470)], PEACH, j=0.6, seg=80)
+    a.poly([(70, 470), (320, 470), (390, 590), (390, 844), (0, 844), (0, 590)], APRICOT, j=0.6, seg=80)
+    for x in (-160, -40, 80, 200, 320, 440, 560):
+        # floorboards run to the vanishing point at (195, 300)
+        a.line([(195 + (x - 195) * 0.3125, 470), (x, 844)], RUST, 2, j=0.4, seg=99)
+    a.line([(70, 470), (0, 590)], RUST7, 3, j=0.3)
+    a.line([(320, 470), (390, 590)], RUST7, 3, j=0.3)
+    a.line([(70, 470), (320, 470)], RUST7, 3, j=0.3)
+    a.poly([(140, 210), (250, 210), (250, 350), (140, 350)], SKY, j=0.6, seg=60)
+    a.line([(195, 212), (195, 348)], WHITE, 6, j=0.3)
+    a.line([(142, 280), (248, 280)], WHITE, 6, j=0.3)
+
+
 def inject():
     html = INDEX.read_text(encoding="utf-8")
     for name, markup in ART.items():
@@ -460,5 +503,59 @@ def inject():
     INDEX.write_text(html, encoding="utf-8")
 
 
+def quilt():
+    """Footer quilt band: eight 100px blocks in the brand palette, tiled sideways."""
+    C = CREAM
+    def tri(*pts, c):
+        return '<path fill="%s" d="M%sZ"/>' % (c, "L".join("%g %g" % p for p in pts))
+    def sq(x, y, w, h, c):
+        return '<rect fill="%s" x="%g" y="%g" width="%g" height="%g"/>' % (c, x, y, w, h)
+    blocks = []
+    # pinwheel
+    b = [sq(0, 0, 100, 100, C)]
+    for (cx, cy), c in zip(((0, 0), (50, 0), (50, 50), (0, 50)), (ORANGE, NAVY, ORANGE, NAVY)):
+        b.append(tri((cx, cy), (cx + 50, cy), (cx + 50, cy + 50) if c == ORANGE else (cx, cy + 50), c=c))
+    blocks.append(b)
+    # nine patch
+    b = [sq(0, 0, 100, 100, PEACH)]
+    for i in range(9):
+        if i % 2 == 0:
+            b.append(sq(i % 3 * 33.3, i // 3 * 33.3, 33.4, 33.4, RUST))
+    blocks.append(b)
+    # square in a square
+    blocks.append([sq(0, 0, 100, 100, SKY), tri((50, 4), (96, 50), (50, 96), (4, 50), c=CREAM),
+                   tri((50, 22), (78, 50), (50, 78), (22, 50), c=RED)])
+    # eight-point star
+    b = [sq(0, 0, 100, 100, C)]
+    for k in range(8):
+        a0 = math.radians(k * 45 - 90)
+        a1 = math.radians(k * 45 - 90 + 22.5)
+        a2 = math.radians(k * 45 - 90 - 22.5)
+        b.append(tri((50, 50), (50 + 20 * math.cos(a2), 50 + 20 * math.sin(a2)), (50 + 48 * math.cos(a0), 50 + 48 * math.sin(a0)),
+                     (50 + 20 * math.cos(a1), 50 + 20 * math.sin(a1)), c=PALM if k % 2 else APRICOT))
+    blocks.append(b)
+    # plus
+    blocks.append([sq(0, 0, 100, 100, LAV2), sq(36, 8, 28, 84, ORANGE), sq(8, 36, 84, 28, ORANGE), sq(36, 36, 28, 28, BROWN)])
+    # hourglass
+    blocks.append([sq(0, 0, 100, 100, PALM3), tri((0, 0), (100, 0), (50, 50), c=NAVY), tri((0, 100), (100, 100), (50, 50), c=NAVY),
+                   tri((50, 30), (70, 50), (50, 70), (30, 50), c=APRICOT)])
+    # checker
+    b = [sq(0, 0, 100, 100, C)]
+    for i in range(16):
+        if (i + i // 4) % 2 == 0:
+            b.append(sq(i % 4 * 25, i // 4 * 25, 25, 25, SKY))
+    blocks.append(b)
+    # diamonds
+    blocks.append([sq(0, 0, 100, 100, ORANGE), tri((25, 0), (50, 25), (25, 50), (0, 25), c=PEACH), tri((75, 0), (100, 25), (75, 50), (50, 25), c=PEACH),
+                   tri((25, 50), (50, 75), (25, 100), (0, 75), c=PEACH), tri((75, 50), (100, 75), (75, 100), (50, 75), c=PEACH),
+                   tri((50, 25), (75, 50), (50, 75), (25, 50), c=NAVY)])
+    out = ['<svg xmlns="http://www.w3.org/2000/svg" width="800" height="100" viewBox="0 0 800 100">']
+    for i, b in enumerate(blocks):
+        out.append('<g transform="translate(%d 0)">%s</g>' % (i * 100, "".join(b)))
+    out.append("</svg>")
+    (ROOT / "assets" / "img" / "quilt.svg").write_text("".join(out) + "\n", encoding="utf-8")
+
+
 if __name__ == "__main__":
     inject()
+    quilt()
