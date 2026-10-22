@@ -1,0 +1,1 @@
+Real product photos, cut out on a transparent background, for the photo layer of the Hanei style. accent-chair-pink-velvet.png (584×735) was cut out from a screenshot of the live site; replace it with the original PNG from the site's assets/img/products folder for full quality.

@@ -1,0 +1,68 @@
+<!doctype html><html><head><link rel="stylesheet" href="../tokens.css"><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Caveat:wght@700&display=swap" rel="stylesheet">
+<style>
+html,body{margin:0}
+body{font-family:var(--font-body);background:var(--cream-50) url(../textures/paper.svg) repeat;color:var(--text-primary)}
+.scene{position:relative;width:1040px;height:720px;overflow:hidden}
+.doodle,.photo,.sticker{position:absolute;pointer-events:none}
+.title{position:absolute;left:0;right:0;top:28px;text-align:center}
+.title h1{margin:0;font:400 64px/1 var(--font-heading);color:var(--text-heading)}
+.title .hl{position:relative;display:inline-block}
+.title .hl img{position:absolute;left:-6%;bottom:-2px;width:112%;height:.42em;z-index:-1}
+.title .note{display:block;margin-top:6px;font:700 22px/26px var(--font-hand);color:var(--rust-600)}
+.cta{position:absolute;left:50%;top:150px;translate:-50% 0}
+.btn{display:inline-flex;align-items:center;min-height:52px;padding:0 26px;border-radius:var(--radius-pill);border:1px solid var(--glass-edge);
+  background:var(--glass-orange);color:var(--brown-900);font:600 17px/20px var(--font-body);text-decoration:none;box-shadow:var(--shadow-glass);
+  -webkit-backdrop-filter:blur(var(--blur-glass)) saturate(1.4);backdrop-filter:blur(var(--blur-glass)) saturate(1.4)}
+.card{position:absolute;padding:16px 18px;border-radius:var(--radius-lg);border:1px solid var(--glass-edge);background:var(--glass-white);
+  box-shadow:var(--shadow-glass),var(--shadow-md);-webkit-backdrop-filter:blur(var(--blur-glass)) saturate(1.4);backdrop-filter:blur(var(--blur-glass)) saturate(1.4)}
+.card .eb{display:flex;align-items:center;gap:8px;font:600 12px/16px var(--font-body);letter-spacing:.08em;text-transform:uppercase;color:var(--navy-700);margin-bottom:8px}
+.card .eb img{width:18px;height:18px}
+.card h3{margin:0 0 2px;font:700 20px/26px var(--font-body);color:var(--ink-900)}
+.card p{margin:0;font-size:15px;line-height:22px}
+.card .muted{color:var(--text-muted);font-size:13px}
+.sw{display:flex;gap:6px;margin-top:10px}.sw i{width:20px;height:20px;border-radius:6px}
+.card--alert{background:rgba(248,201,201,.82)}
+.card--alert .eb,.card--alert p{color:var(--red-700)}
+.caption{position:absolute;left:0;right:0;bottom:22px;text-align:center}
+.caption b{display:block;font:700 20px/26px var(--font-body);color:var(--navy-700)}
+.caption span{font-size:14px;color:var(--text-muted)}
+</style></head><body>
+<div class="scene">
+  <!-- 1 line doodles, behind everything -->
+  <img class="doodle" src="../doodles/room-floor.svg" alt="" style="left:80px;top:500px;width:880px">
+  <img class="doodle" src="../doodles/squiggle.svg" alt="" style="left:150px;top:250px;width:210px">
+  <img class="doodle" src="../doodles/squiggle.svg" alt="" style="left:690px;top:240px;width:230px;transform:scaleX(-1)">
+  <img class="doodle" src="../doodles/speed-lines.svg" alt="" style="left:330px;top:300px;width:110px">
+  <img class="doodle" src="../doodles/star.svg" alt="" style="left:450px;top:236px;width:72px;rotate:-12deg">
+  <img class="doodle" src="../doodles/star.svg" alt="" style="left:620px;top:280px;width:64px;rotate:14deg">
+  <img class="doodle" src="../doodles/burst.svg" alt="" style="left:560px;top:216px;width:80px">
+  <img class="doodle" src="../doodles/plant.svg" alt="" style="left:250px;top:430px;width:110px">
+  <img class="doodle" src="../doodles/side-table.svg" alt="" style="left:350px;top:470px;width:80px">
+  <img class="doodle" src="../doodles/grass.svg" alt="" style="left:432px;top:556px;width:70px">
+  <img class="doodle" src="../doodles/grass.svg" alt="" style="left:600px;top:556px;width:60px">
+  <!-- 2 the real product photo -->
+  <img class="photo" src="../products/accent-chair-pink-velvet.png" alt="Pink velvet accent chair with gold legs" style="left:410px;top:250px;width:250px;filter:drop-shadow(0 18px 18px rgba(59,42,20,.18))">
+  <!-- 3 title, CTA -->
+  <div class="title"><h1>From Brief To Product <span class="hl"><img src="../doodles/swoosh.svg" alt="">List</span></h1></div>
+  <div class="cta"><a class="btn" href="#">Explore HaneiRoom</a></div>
+  <!-- 4 glass cards -->
+  <div class="card" style="left:112px;top:432px;width:250px;rotate:-3deg">
+    <div class="eb"><img src="../icons/folder.svg" alt="">Project</div>
+    <h3>Lounge Refresh</h3><div class="muted">Client: your client · Status: Done</div>
+    <div class="sw"><i style="background:var(--navy-700)"></i><i style="background:var(--orange-500)"></i><i style="background:var(--orange-300)"></i><i style="background:var(--peach-100)"></i><i style="background:var(--lavender-200)"></i></div>
+  </div>
+  <div class="card" style="left:704px;top:300px;width:250px;rotate:2deg">
+    <div class="eb"><img src="../icons/sparkle.svg" alt="">The brief</div>
+    <p>A calm, warm lounge in soft whites and natural wood, with cozy textures and a budget led by seating.</p>
+  </div>
+  <div class="card card--alert" style="left:730px;top:478px;width:240px;rotate:-2deg">
+    <div class="eb"><img src="../icons/alert.svg" alt="">Pre-check</div>
+    <p>Minimalist adjectives next to cozy, organic photos. Kept as a deliberate contrast.</p>
+  </div>
+  <!-- 5 stickers -->
+  <img class="sticker" src="../stickers/heart.svg" alt="" style="left:322px;top:404px;width:66px;rotate:10deg">
+  <img class="sticker" src="../stickers/woohoo.svg" alt="" style="left:936px;top:572px;width:76px;rotate:-8deg">
+  <div class="caption"><b>Pink Velvet Accent Chair</b><span>Seating · matched to the style, palette and budget</span></div>
+</div>
+</body></html>
