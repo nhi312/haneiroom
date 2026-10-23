@@ -127,14 +127,25 @@
     var headBox = $('.process__head').getBoundingClientRect();
     var pts = [[w / 2, headBox.bottom - box.top + 12]];
     var badges = [];
-    stops.forEach(function (s) {
+    stops.forEach(function (s, i) {
       var n = $('.stop__num', s).getBoundingClientRect();
       var cx = n.left + n.width / 2 - box.left, cy = n.top + n.height / 2 - box.top;
       badges.push([cx, cy]);
       pts.push([cx, cy]);
-      pts.push([cx, s.getBoundingClientRect().bottom - box.top + 28]);
+      if (i < stops.length - 1) { pts.push([cx, s.getBoundingClientRect().bottom - box.top + 28]); return; }
+      // the last band ends the section, so the trail stops on it: it runs down
+      // beside the picks card, then turns and points straight at its middle
+      var pick = $('.ui--picks', s), card = pick.getBoundingClientRect();
+      // measured before the stop reveals, the card still sits on its entrance offset
+      var lift = parseFloat((getComputedStyle(pick).translate || '').split(' ')[1]) || 0;
+      var my = (card.top + card.bottom) / 2 - lift - box.top, cl = card.left - box.left - 16;
+      var gap = cl - cx;
+      if (gap > 90) {
+        pts.push([cx, my - 70]);
+        pts.push([cx + gap * .4, my]);
+      } else pts.push([cx, my - 40]);
+      pts.push([cl, my]);
     });
-    pts.push([w / 2, h - 70]);
 
     trail.setAttribute('viewBox', '0 0 ' + w.toFixed(0) + ' ' + h.toFixed(0));
     var d = curve(pts);
@@ -242,7 +253,8 @@
   var proj = $('[data-proj]'), projSw = $$('.proj__sw i', proj);
   var projStatus = $('[data-status-done]', proj);
 
-  // Scan the room, find the floor, measure it, pick the chair, place that same chair.
+  // Scan the room, find the floor, measure it, pick the chair, place that same chair,
+  // then tap Buy and open its shop card.
   // `hide` fades the phone's own controls once the view shrinks into a phone.
   function playScan(p, hide) {
     var sweep = ramp(p, .04, .4), keep = 1 - (hide || 0);
@@ -253,15 +265,17 @@
       floor: ease(ramp(p, .38, .5)),
       outline: ramp(p, .42, .54),
       dims: easeBack(ramp(p, .5, .56)),
-      marker: ramp(p, .56, .6) * (1 - ramp(p, .8, .84)),
+      marker: ramp(p, .56, .6) * (1 - ramp(p, .78, .82)),
       place: ramp(p, .58, .62) * (1 - ramp(p, .66, .7)),
-      sheet: ease(ramp(p, .66, .72)) * (1 - ease(ramp(p, .78, .82))),
-      tap: ramp(p, .74, .76) * (1 - ramp(p, .78, .8)),
-      chair: easeBack(ramp(p, .82, .9)),
-      foot: ramp(p, .86, .92),
-      buy: ramp(p, .9, .95) * keep
+      sheet: ease(ramp(p, .66, .71)) * (1 - ease(ramp(p, .76, .8))),
+      tap: ramp(p, .73, .75) * (1 - ramp(p, .76, .78)),
+      chair: easeBack(ramp(p, .79, .85)),
+      foot: ramp(p, .82, .87),
+      buy: ramp(p, .85, .88) * keep,
+      btap: ramp(p, .89, .91) * (1 - ramp(p, .92, .94)),
+      deal: ease(ramp(p, .92, .97)) * keep
     });
-    status.textContent = p < .38 ? 'Scanning your space…' : p < .66 ? 'Floor found' : p < .86 ? 'Pick a piece' : 'Looks right?';
+    status.textContent = p < .38 ? 'Scanning your space…' : p < .66 ? 'Floor found' : p < .82 ? 'Pick a piece' : 'Looks right?';
   }
 
   function playApp(p) {
@@ -280,10 +294,14 @@
 
   function updateGallery() {
     if (!G) {
-      // stacked: the scan pins on its own, then the app plays as it crosses the screen
-      var sr = scan.getBoundingClientRect(), fr = inner.getBoundingClientRect();
-      playScan(clamp(-sr.top / Math.max(sr.height - vh, 1), 0, 1));
-      playApp(clamp((vh * .9 - fr.top) / (fr.height + vh * .35), 0, 1));
+      // stacked: one pinned screen; the scan plays, fades, and the desktop takes its place
+      var gr = gallery.getBoundingClientRect(), q = clamp(-gr.top / Math.max(gr.height - vh, 1), 0, 1);
+      playScan(ramp(q, 0, .56));
+      setVars(scan, { so: 1 - ease(ramp(q, .6, .67)) });
+      setVars(stage, { fo: ease(ramp(q, .64, .71)) });
+      thenNote.style.setProperty('--o', (ramp(q, .66, .7) * (1 - ramp(q, .76, .8))).toFixed(3));
+      nowNote.style.setProperty('--o', ramp(q, .9, .95).toFixed(3));
+      playApp(ramp(q, .72, .96));
       return;
     }
     var p = clamp((window.scrollY - galTop) / (galH - vh), 0, 1);
@@ -422,7 +440,7 @@
   function onModeChange() {
     setMode();
     if (!moving()) {
-      [comp, stage1, aroundHead, ui, proj, venn].concat(planLines, rows).forEach(function (el) { el.removeAttribute('style'); });
+      [comp, stage1, aroundHead, ui, proj, venn, stage, scan, thenNote, nowNote].concat(planLines, rows).forEach(function (el) { el.removeAttribute('style'); });
       // these carry their own layout inline, so only clear what the animation set
       flyers.forEach(function (el) { el.style.transform = ''; el.style.opacity = ''; });
       projSw.forEach(function (el) { el.style.removeProperty('--sw'); });

@@ -246,7 +246,14 @@ a { color: inherit; }
 .stop__fiber { background: #fffdf8; }
 /* grain over the band colour so it reads as paper */
 .stop__paper { background: var(--band); }
-.stop__paper::after { content: ""; position: absolute; inset: 0; background: url("../../design-system/textures/grain.svg") 0 0 / 220px; mix-blend-mode: multiply; opacity: .45; }
+.stop__paper::before, .stop__paper::after { content: ""; position: absolute; inset: 0; }
+/* flecks, dark and light, so the band reads as rough card stock up close */
+.stop__paper::before { background: url("../../design-system/textures/speckle.svg") 0 0 / 300px; opacity: .7; }
+/* grain plus the paper's long fibres */
+.stop__paper::after {
+  background: url("../../design-system/textures/grain.svg") 0 0 / 160px, url("../../design-system/textures/paper.svg") 0 0 / 400px;
+  mix-blend-mode: multiply; opacity: .5;
+}
 .stop__wrap {
   position: relative; z-index: 2;
   display: grid; grid-template-columns: 96px minmax(0, 1fr); column-gap: var(--space-6);
@@ -519,12 +526,12 @@ a { color: inherit; }
 .scan__marker svg { width: calc(var(--u) * 4.4); stroke-width: 1.4; filter: drop-shadow(0 1px 2px rgba(30, 30, 60, .3)); }
 .scan__marker svg + svg { width: calc(var(--u) * 3); }
 .scan__shadow {
-  position: absolute; left: 48.6%; top: 69.6%; width: 11.5%; height: 2.6%; translate: -50% -50%; border-radius: 50%;
+  position: absolute; left: 48.6%; top: 69.6%; width: calc(11.5% * var(--chair-k, 1)); height: calc(2.6% * var(--chair-k, 1)); translate: -50% -50%; border-radius: 50%;
   background: radial-gradient(closest-side, rgba(59, 42, 20, .42), rgba(59, 42, 20, 0)); opacity: var(--chair, 1);
 }
 .scan__chair {
   position: absolute; left: 48.4%; top: 70%; width: 10.5%; max-width: none; transform-origin: 50% 100%;
-  translate: -50% calc(-97% - (1 - var(--chair, 1)) * 30%); scale: calc(.7 + var(--chair, 1) * .3);
+  translate: -50% calc(-97% - (1 - var(--chair, 1)) * 30%); scale: calc((.7 + var(--chair, 1) * .3) * var(--chair-k, 1));
   opacity: clamp(0, var(--chair, 1) * 3, 1); filter: drop-shadow(0 4px 4px rgba(59, 42, 20, .25));
 }
 
@@ -548,7 +555,8 @@ a { color: inherit; }
 .scan__pill--top { top: var(--scan-top); opacity: var(--ui, 1); }
 .scan__pill--place { bottom: 8%; padding-left: 16px; opacity: var(--place, 0); translate: -50% calc((1 - var(--place, 0)) * 12px); }
 .scan__pill--buy {
-  bottom: 8%; padding: 12px 26px; opacity: var(--buy, 1); translate: -50% calc((1 - var(--buy, 1)) * 12px);
+  bottom: 8%; padding: 12px 26px; opacity: calc(var(--buy, 1) * (1 - var(--deal, 1))); translate: -50% calc((1 - var(--buy, 1)) * 12px);
+  scale: calc(1 - var(--btap, 0) * .05);
   background: linear-gradient(180deg, rgba(255, 196, 140, .95), rgba(255, 145, 44, .82)); color: var(--brown-900); font-weight: 700;
 }
 .scan__rail {
@@ -579,6 +587,23 @@ a { color: inherit; }
   position: absolute; left: 50%; top: 50%; width: 46px; aspect-ratio: 1; translate: -50% -50%; border-radius: 50%;
   background: rgba(255, 255, 255, .55); opacity: var(--tap, 0); scale: calc(.4 + var(--tap, 0) * .8);
 }
+.scan__tap--buy { opacity: var(--btap, 0); scale: calc(.4 + var(--btap, 0) * .8); }
+
+/* Buy opens the shop card: what the piece is, what it costs */
+.scan__deal {
+  position: absolute; left: 50%; bottom: 16px; width: min(400px, calc(100% - 32px)); padding: 10px 18px 18px; border-radius: 30px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, .94), rgba(255, 255, 255, .8));
+  border: 1px solid var(--lg-edge); box-shadow: var(--lg-shadow); -webkit-backdrop-filter: var(--lg-blur); backdrop-filter: var(--lg-blur);
+  translate: -50% calc((1 - var(--deal, 1)) * 120%); opacity: min(1, calc(var(--deal, 1) * 4));
+}
+.scan__desc { margin-top: 12px; font: 400 14px/20px var(--font-body); color: var(--ink-900); }
+.scan__buy { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 14px; padding-top: 14px; border-top: 1px dashed rgba(30, 30, 60, .15); }
+.scan__price b { display: block; font: 800 26px/30px var(--font-body); color: var(--navy-700); }
+.scan__price small { display: block; font: 500 12px/16px var(--font-body); color: var(--palm-600); }
+.scan__cta {
+  flex: none; padding: 12px 26px; border-radius: var(--radius-pill); border: 1px solid var(--lg-edge); box-shadow: var(--lg-shadow);
+  background: linear-gradient(180deg, rgba(255, 196, 140, .95), rgba(255, 145, 44, .82)); color: var(--brown-900); font: 700 16px/22px var(--font-body);
+}
 .gallery__bg { display: none; }
 @media (max-width: 767px) {
   .scan { --scan-top: 84px; }
@@ -594,6 +619,14 @@ a { color: inherit; }
   .scan__bracket--tl, .scan__bracket--tr { top: calc(var(--scan-top) + 60px); }
   .scan__dim { padding: 2px 10px; font-size: 13px; line-height: 18px; }
   .scan__item { grid-template-columns: 80px 1fr; }
+  /* the floor shrinks to fit a phone; the chair is what people look at, so it shrinks less */
+  .scan { --chair-k: 2.3; }
+  .scan__deal { padding: 8px 16px 16px; }
+  .scan__item b { font-size: 17px; line-height: 22px; }
+  .scan__item small { font-size: 13px; line-height: 18px; }
+  .scan__desc { margin-top: 10px; font-size: 13px; line-height: 19px; }
+  .scan__buy { margin-top: 12px; padding-top: 12px; }
+  .scan__price b { font-size: 22px; line-height: 26px; }
 }
 
 .tag-note { position: relative; z-index: 5; width: 240px; padding: 14px 16px; background: var(--white); box-shadow: var(--shadow-md); font-size: 14px; line-height: 20px; rotate: -2deg; }
@@ -635,6 +668,20 @@ html:not(.pin) .tag-note--then { order: 1; margin-top: -8px; }
 html:not(.pin) .frame { order: 2; width: min(960px, 100%); margin-top: var(--space-8); padding: var(--b); }
 html:not(.pin) .frame__inner { position: relative; inset: auto; aspect-ratio: 1000 / 625; }
 html:not(.pin) .tag-note--now { order: 3; margin-top: -12px; }
+
+/* with motion, the stack pins too: the scan plays, then fades out and the
+   desktop takes its place on the same screen instead of scrolling in below */
+.motion:not(.pin) .gallery { height: 560vh; height: 560svh; }
+.motion:not(.pin) .gallery__stage { position: sticky; top: 0; display: block; height: 100vh; height: 100svh; padding: 0; overflow: hidden; }
+.motion:not(.pin) .scan { position: absolute; inset: 0; height: auto; margin: 0; opacity: var(--so, 1); scale: calc(1 - (1 - var(--so, 1)) * .06); }
+.motion:not(.pin) .scan__view { position: absolute; inset: 0; height: auto; }
+.motion:not(.pin) .frame {
+  position: absolute; left: 50%; top: 50%; margin: 0; width: min(960px, calc(100% - 24px), (100svh - 300px) * 1.28 + 32px);
+  translate: -50% -50%; opacity: var(--fo, 1); scale: calc(.92 + var(--fo, 1) * .08);
+}
+.motion:not(.pin) .tag-note { position: absolute; left: 50%; margin: 0; translate: -50% 0; opacity: var(--o, 1); }
+.motion:not(.pin) .tag-note--then { top: 88px; rotate: -2deg; }
+.motion:not(.pin) .tag-note--now { bottom: 32px; rotate: 2deg; }
 
 /* two products, drawn as a Venn diagram: the circles slide together as it scrolls in */
 .compare { max-width: 1040px; margin: 0 auto; padding: var(--space-24) var(--space-6) var(--space-32); text-align: center; }
@@ -811,25 +858,30 @@ html:not(.pin) .tag-note--now { order: 3; margin-top: -12px; }
   .frame__corner--br { right: -16px; bottom: -16px; }
   .frame__corner--bl { left: -16px; bottom: -16px; }
   .frame__inner { --ui-w: 640; }
-  .app__ui { width: 640px; height: 400px; }
+  .app__ui { width: 640px; height: 500px; }
   .app__side { display: none; }
   .app__cards { grid-template-columns: repeat(2, 1fr); }
   .app__cards .proj:nth-child(n+3) { display: none; }
-  html:not(.pin) .frame__inner { aspect-ratio: 640 / 400; }
+  html:not(.pin) .frame__inner { aspect-ratio: 640 / 500; }
 
   .compare { padding: var(--space-16) var(--space-4) var(--space-24); }
-  .venn { aspect-ratio: .6; }
-  .venn__circle { top: auto; left: 5%; right: auto; width: 90%; translate: none; }
-  .venn__circle--a { top: 2%; transform: translateY(calc((1 - var(--v)) * -14%)); }
-  .venn__circle--b { bottom: 2%; transform: translateY(calc((1 - var(--v)) * 14%)); }
-  .venn__set { left: 50%; width: 72%; }
-  .venn__set--a { top: 22%; left: 50%; }
-  .venn__set--both { top: 50%; left: 50%; width: 60%; }
-  .venn__set--b { top: 78%; left: 50%; }
+  /* stacked: the circles overlap by a fifth of the height so "Both" fits in the
+     lens, and each set sits in the part of its circle the other doesn't cover */
+  .venn { width: min(400px, 100%); aspect-ratio: 2 / 3; }
+  .venn__circle { top: auto; left: 3%; right: auto; width: 94%; translate: none; }
+  .venn__circle--a { top: 0; transform: translateY(calc((1 - var(--v)) * -14%)); }
+  .venn__circle--b { bottom: 0; transform: translateY(calc((1 - var(--v)) * 14%)); }
+  .venn__set { left: 50%; width: 76%; }
+  .venn__set--a { top: 19%; }
+  .venn__set--both { top: 50%; width: 58%; }
+  .venn__set--b { top: 81%; }
+  .venn__where { margin-top: 6px; font-size: 11px; }
   .venn ul { margin-top: var(--space-2); gap: 4px; }
-  .venn li { font-size: 15px; line-height: 20px; }
-  .venn__set--both li { font-size: 13px; line-height: 18px; }
-  .venn__name { font-size: 32px; }
+  .venn li { font-size: 14px; line-height: 19px; }
+  .venn__set--both .venn__name { font-size: 12px; }
+  .venn__set--both ul { margin-top: 4px; gap: 2px; }
+  .venn__set--both li { font-size: 12px; line-height: 16px; }
+  .venn__name { font-size: 30px; }
 
   .demo { padding: 96px var(--space-4); }
   .demo__box { padding: var(--space-12) 0 var(--space-8); }

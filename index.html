@@ -351,7 +351,7 @@
         </div>
       </div>
 
-      <figure class="scan" role="img" aria-label="Animation of HaneiRoom on a phone, not a live scan: it scans an empty room, finds and measures the floor, shows a pink velvet accent chair, then places that same chair on the floor.">
+      <figure class="scan" role="img" aria-label="Animation of HaneiRoom on a phone, not a live scan: it scans an empty room, finds and measures the floor, shows a pink velvet accent chair, places that same chair on the floor, then opens its shop card with a description and the price.">
         <div class="scan__view" aria-hidden="true">
           <!-- the camera view: the room and everything anchored to its floor -->
           <div class="scan__world">
@@ -380,7 +380,20 @@
           <p class="scan__pill scan__pill--top"><svg viewBox="0 0 24 24"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3M12 9v6M9 12h6"/></svg><span data-status>Looks right?</span></p>
           <p class="scan__rail"><svg viewBox="0 0 24 24"><path d="M12 3l9 5-9 5-9-5zM3 13l9 5 9-5"/></svg><svg viewBox="0 0 24 24"><path d="M3 16 16 3l5 5L8 21zM7 12l2 2M10 9l2 2M13 6l2 2"/></svg><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle class="scan__rec" cx="12" cy="12" r="4.5"/></svg></p>
           <p class="scan__pill scan__pill--place"><svg viewBox="0 0 24 24"><path d="M7 11V6a5 5 0 0 1 10 0v5M5 11h14v4H5zM6.5 15l-1 6M17.5 15l1 6"/></svg>Place your chair here</p>
-          <p class="scan__pill scan__pill--buy">Buy this exact piece</p>
+          <p class="scan__pill scan__pill--buy">Buy this exact piece<i class="scan__tap scan__tap--buy"></i></p>
+          <!-- tapping Buy opens the piece's shop card -->
+          <div class="scan__deal">
+            <span class="scan__grab"></span>
+            <div class="scan__item">
+              <span class="scan__thumb"><img src="assets/img/products/accent-chair-pink-velvet.webp" alt="" width="492" height="620"></span>
+              <p><b>Velvet accent chair</b><small>Pink velvet, gold legs · 68 × 62 × 78 cm</small></p>
+            </div>
+            <p class="scan__desc">Shell-back seat in soft pink velvet on brushed gold sled legs. Fits the 2.8 × 3.2 m floor you just measured.</p>
+            <div class="scan__buy">
+              <p class="scan__price"><b>$289</b><small>In stock · ships in 3 to 5 days</small></p>
+              <span class="scan__cta">Buy now</span>
+            </div>
+          </div>
           <!-- the product sheet: the same cut-out that gets placed -->
           <div class="scan__sheet">
             <span class="scan__grab"></span>
