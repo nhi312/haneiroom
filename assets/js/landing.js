@@ -247,7 +247,7 @@
     galH = gallery.offsetHeight;
   }
 
-  /* HaneiRoom's scan plays across the screen, then Hanei makes a project. Both run
+  /* HaneiRoom's scan plays across the screen, then HaneiAI makes a project. Both run
      from a 0..1 progress, so the same code serves the pinned stage and the stack. */
   var status = $('[data-status]');
   var proj = $('[data-proj]'), projSw = $$('.proj__sw i', proj);
@@ -324,10 +324,10 @@
     playApp(ramp(p, .87, .98));
   }
 
-  var venn = $('.venn');
-  function updateVenn() {
-    var r = venn.getBoundingClientRect();
-    venn.style.setProperty('--v', ease(clamp((vh * .9 - r.top) / (vh * .5), 0, 1)).toFixed(4));
+  var duo = $('.duo');
+  function updateDuo() {
+    var r = duo.getBoundingClientRect();
+    duo.style.setProperty('--v', ease(clamp((vh * .9 - r.top) / (vh * .5), 0, 1)).toFixed(4));
   }
 
   function updateAround() {
@@ -486,7 +486,7 @@
     updateMess();
     updateAround();
     updateGallery();
-    updateVenn();
+    updateDuo();
     updateDemo();
   }
 
@@ -505,7 +505,7 @@
   function onModeChange() {
     setMode();
     if (!moving()) {
-      [comp, stage1, aroundHead, ui, proj, venn, stage, scan, thenNote, nowNote].concat(planLines, rows).forEach(function (el) { el.removeAttribute('style'); });
+      [comp, stage1, aroundHead, ui, proj, duo, stage, scan, thenNote, nowNote].concat(planLines, rows).forEach(function (el) { el.removeAttribute('style'); });
       // these carry their own layout inline, so only clear what the animation set
       flyers.forEach(function (el) { el.style.transform = ''; el.style.opacity = ''; });
       projSw.forEach(function (el) { el.style.removeProperty('--sw'); });

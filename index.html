@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>HaneiRoom · Every room starts with a mess</title>
-  <meta name="description" content="HaneiRoom helps interior designers turn a client's scattered ideas into a clear brief and a real furniture list. Two products: HaneiRoom on your phone to see furniture in the room, Hanei on the web to plan it with your client.">
+  <meta name="description" content="HaneiRoom helps interior designers turn a client's scattered ideas into a clear brief and a real furniture list. Two products: HaneiRoom on your phone to see furniture in the room, HaneiAI on the web to plan it with your client.">
   <meta name="theme-color" content="#faf4ea">
   <link rel="icon" href="design-system/logo/haneiroom-icon.png">
   <link rel="apple-touch-icon" href="design-system/logo/haneiroom-icon.png">
@@ -28,6 +28,17 @@
   <script src="assets/js/landing.js" defer></script>
 </head>
 <body>
+<!-- shared drawing: the Hanei flower and the boiling sketch line, used by the compare bubbles and the demo thank-you -->
+<svg class="sprite" width="0" height="0" aria-hidden="true" focusable="false">
+  <defs>
+    <!-- line boil: the noise reseeds a few times a second so every edge wobbles like a hand-drawn frame -->
+    <filter id="hc-boil" x="-10%" y="-10%" width="120%" height="120%">
+      <feTurbulence type="fractalNoise" baseFrequency=".04" numOctaves="2" seed="1" result="n"><animate attributeName="seed" values="1;5;9;3" dur=".48s" calcMode="discrete" repeatCount="indefinite"/></feTurbulence>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="4" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+    <g id="hc-petals"><ellipse cx="0" cy="-52" rx="24" ry="62" transform="rotate(-8)"/><ellipse cx="0" cy="-48" rx="26" ry="58" transform="rotate(38)"/><ellipse cx="0" cy="-44" rx="27" ry="54" transform="rotate(82)"/><ellipse cx="0" cy="-48" rx="25" ry="58" transform="rotate(128)"/><ellipse cx="0" cy="-50" rx="24" ry="60" transform="rotate(172)"/><ellipse cx="0" cy="-46" rx="26" ry="56" transform="rotate(215)"/><ellipse cx="0" cy="-48" rx="27" ry="58" transform="rotate(262)"/><ellipse cx="0" cy="-52" rx="25" ry="62" transform="rotate(305)"/><circle r="34"/></g>
+  </defs>
+</svg>
 <a class="skip" href="#main">Skip to content</a>
 
 <header class="nav" data-nav>
@@ -229,7 +240,7 @@
       <div class="stop__body">
         <h3 class="stop__title">Get the details right.</h3>
         <ul class="tags" aria-label="What goes in">
-          <li>#one-sentence brief</li><li>#Hanei checks it</li>
+          <li>#one-sentence brief</li><li>#HaneiAI checks it</li>
         </ul>
         <div class="desk desk--3">
           <div class="desk__art">
@@ -295,7 +306,7 @@
       <span aria-hidden="true" class="around"><i style="--lx:-3.2;--ly:-1.2;--lr:-24">a</i><i style="--lx:1.4;--ly:.9;--lr:18">r</i><i style="--lx:-.8;--ly:-1.6;--lr:-12">o</i><i style="--lx:2.2;--ly:1.4;--lr:30">u</i><i style="--lx:-1.6;--ly:.6;--lr:-20">n</i><i style="--lx:2.8;--ly:-1.1;--lr:16">d</i></span>
       <span aria-hidden="true" class="changed__l3">too.</span>
     </h2>
-    <p class="changed__lede">Two products, two jobs. HaneiRoom puts a piece in your room before you buy it. Hanei turns your client's brief into a plan you can work from.</p>
+    <p class="changed__lede">Two products, two jobs. HaneiRoom puts a piece in your room before you buy it. HaneiAI turns your client's brief into a plan you can work from.</p>
   </header>
 
   <div class="gallery" data-scene="changed">
@@ -303,7 +314,7 @@
       <div class="gallery__bg" aria-hidden="true"><img src="assets/img/ar-room-empty.webp" alt="" width="1264" height="843" loading="lazy"></div>
       <div class="gallery__head" aria-hidden="true">
         <p class="gallery__title">We've moved things around, too.</p>
-        <p class="gallery__cap"><span class="gallery__then">HaneiRoom · on your phone, with AR</span><span class="gallery__now">Hanei · on the web, for planning with clients</span></p>
+        <p class="gallery__cap"><span class="gallery__then">HaneiRoom · on your phone, with AR</span><span class="gallery__now">HaneiAI · on the web, for planning with clients</span></p>
       </div>
       <div class="collage collage--palette" aria-hidden="true">
         <i style="background:var(--navy-700)"></i><i style="background:var(--navy-300)"></i><i style="background:var(--lavender-200)"></i>
@@ -321,7 +332,7 @@
         <span class="frame__corner frame__corner--br" aria-hidden="true"><!-- art:frame-corner --><svg class="art" viewBox="0 0 110 110" aria-hidden="true" focusable="false"><path class="s" pathLength="1" fill="#fcc490" d="M39.9 32.1C40.2 34.1 44.8 34.7 47.1 35.3C49.4 36 51.7 35.9 53.9 36.1C56.2 36.2 58.4 36.3 60.6 36.3C62.9 36.4 65.1 36.5 67.3 36.3C69.5 36 71.7 35.3 73.8 34.7C76 34.1 78.1 33.5 80.3 32.7C82.4 31.9 84.5 31.1 86.6 30.1C88.8 29.1 91 28.1 93.1 26.9C95.2 25.7 97 23.3 99.2 22.8C101.4 22.3 106 23.9 106 23.9C106 24 101.4 24.2 99.1 23.1C96.7 22.1 94.2 19.3 91.8 17.7C89.4 16 87 14.2 84.6 13C82.2 11.7 79.9 10.8 77.6 10.2C75.3 9.7 73 9.4 70.8 9.5C68.5 9.5 66.4 9.9 64.2 10.5C62 11 59.8 11.7 57.7 12.9C55.6 14.1 53.7 15.8 51.7 17.5C49.7 19.3 47.5 21 45.6 23.4C43.6 25.8 39.7 30.1 39.9 32.1Z"/><path class="s" pathLength="1" fill="#fcc490" d="M32.1 40.2C30.1 40 26 43.9 23.6 45.8C21.1 47.7 19.2 49.6 17.5 51.6C15.7 53.6 14.2 55.7 13 57.8C11.8 59.9 10.9 62 10.3 64.2C9.6 66.3 9.1 68.6 9.1 70.8C9.2 73 9.9 75.2 10.5 77.5C11.2 79.8 11.8 82.2 13 84.6C14.1 87 15.8 89.5 17.5 91.9C19.1 94.3 21.9 96.8 23.1 99.2C24.2 101.5 24.3 105.9 24.3 106C24.3 106 22.7 101.4 23.1 99.2C23.5 97.1 25.5 95 26.6 92.9C27.8 90.8 29.1 88.8 30.2 86.7C31.2 84.6 32.2 82.5 32.9 80.3C33.7 78.2 34.3 76 34.8 73.8C35.3 71.7 35.7 69.5 36 67.3C36.2 65.1 36.2 62.9 36.3 60.6C36.3 58.4 36.5 56.2 36.3 53.9C36.2 51.6 36.2 49.3 35.5 47C34.8 44.7 34.1 40.4 32.1 40.2Z"/><path class="s" pathLength="1" fill="#ff912c" d="M61.4 34C61.5 39.4 60.1 45.7 57 50.2C53.9 54.7 48.1 59.3 42.8 61.1C37.5 62.9 30.5 62.9 25.2 61.2C19.9 59.4 14.2 55 11 50.5C7.7 46 5.5 39.4 5.5 34C5.6 28.6 7.9 22.4 11.2 17.8C14.5 13.3 19.9 8.7 25.1 6.8C30.4 4.9 37.5 4.8 42.7 6.7C48 8.5 53.6 13.4 56.7 17.9C59.8 22.5 61.4 28.6 61.4 34Z"/><path class="s" pathLength="1" fill="#fcc490" d="M49 34C48.9 36.9 47.8 40.5 46.1 42.8C44.4 45.1 41.4 46.9 38.7 47.8C35.9 48.7 32.3 49.1 29.5 48.3C26.6 47.4 23.5 45.3 21.8 42.9C20 40.5 18.8 37 18.9 34C18.9 31 20.2 27.3 21.9 25C23.6 22.6 26.4 20.6 29.2 19.7C32 18.9 35.8 19 38.6 19.9C41.5 20.9 44.7 23.1 46.4 25.4C48.2 27.8 49 31.1 49 34Z"/><path class="s" pathLength="1" fill="#a85a22" d="M39.9 34C39.9 35.4 39.3 37.2 38.3 38.2C37.4 39.2 35.4 40 34 40C32.6 40.1 30.7 39.3 29.7 38.3C28.7 37.3 28.1 35.4 28.1 34C28.1 32.6 28.7 30.8 29.7 29.8C30.7 28.9 32.6 28.1 34 28.1C35.4 28.1 37.2 28.8 38.2 29.8C39.2 30.8 39.8 32.6 39.9 34Z"/></svg><!-- /art:frame-corner --></span>
         <span class="frame__crest" aria-hidden="true"><!-- art:frame-crest --><svg class="art" viewBox="0 0 180 70" aria-hidden="true" focusable="false"><path class="s" pathLength="1" fill="#fcc490" d="M90.2 49.9C90.8 47.8 86.7 41.9 84.8 38.6C82.8 35.4 80.5 32.9 78.3 30.5C76.1 28 74 25.8 71.7 24C69.4 22.1 67 20.7 64.6 19.5C62.1 18.3 59.5 17.4 56.9 17C54.2 16.6 51.5 16.8 48.6 17.1C45.7 17.5 42.6 17.9 39.6 18.9C36.5 20 33.4 21.8 30.3 23.5C27.1 25.2 23.6 27.9 20.6 29.1C17.5 30.2 12 30.2 12 30.2C12 30.1 18 28.4 20.6 28.9C23.3 29.3 25.5 31.6 27.9 33C30.3 34.4 32.6 35.9 35.1 37.1C37.6 38.4 40.1 39.3 42.6 40.3C45.1 41.4 47.6 42.5 50.1 43.5C52.6 44.6 55.1 45.6 57.7 46.5C60.2 47.3 62.8 47.8 65.4 48.5C68.1 49.1 70.7 49.9 73.3 50.3C76 50.7 78.5 51 81.3 51C84.2 50.9 89.7 51.9 90.2 49.9Z"/><path class="s" pathLength="1" fill="#fcc490" d="M90 50.2C90.5 52.3 95.8 51.1 98.6 51.1C101.4 51.2 104 50.7 106.7 50.3C109.4 49.9 112 49.4 114.6 48.7C117.2 48 119.7 46.9 122.2 46C124.8 45.2 127.4 44.5 129.9 43.6C132.5 42.7 135 41.6 137.5 40.6C140 39.5 142.6 38.6 145 37.3C147.4 36 149.7 34.3 152.1 33C154.5 31.6 156.8 29.6 159.4 29C162.1 28.5 168 29.8 168 29.8C168 29.8 162.4 30.2 159.3 29.2C156.3 28.1 152.9 25.1 149.8 23.4C146.6 21.7 143.4 20 140.4 18.9C137.3 17.8 134.3 17.3 131.4 17C128.6 16.8 125.9 16.9 123.2 17.3C120.5 17.7 117.9 18.3 115.4 19.4C112.9 20.5 110.4 21.9 108.1 23.7C105.8 25.6 103.9 28 101.8 30.5C99.6 33 97.2 35.4 95.2 38.7C93.3 42 89.4 48.1 90 50.2Z"/><path class="s" pathLength="1" fill="#ff912c" d="M116.3 40C116.4 45.1 114.6 51.4 111.5 55.5C108.5 59.5 103 62.8 98.1 64.4C93.2 65.9 87 66.1 82.2 64.7C77.4 63.2 72.3 59.6 69.2 55.5C66.2 51.4 64 45.2 64 40C63.9 34.8 65.9 28.3 68.9 24.3C71.9 20.3 77 17.4 81.9 15.9C86.8 14.4 93.4 13.9 98.2 15.4C103.1 16.9 108.1 20.5 111.1 24.6C114.1 28.7 116.2 34.9 116.3 40Z"/><path class="s" pathLength="1" fill="#fcc490" d="M101.9 40C101.8 42.3 101 45.2 99.7 47.1C98.3 49 96 50.7 93.8 51.4C91.6 52.1 88.5 51.9 86.2 51.2C84 50.5 81.6 49 80.2 47.1C78.8 45.3 77.8 42.4 77.7 40C77.7 37.6 78.6 34.8 80 32.8C81.5 30.9 84.1 29 86.4 28.3C88.6 27.7 91.4 28 93.7 28.7C96 29.5 98.6 31.2 100 33.1C101.3 34.9 101.9 37.7 101.9 40Z"/></svg><!-- /art:frame-crest --></span>
         <div class="frame__inner">
-          <div class="app" role="img" aria-label="The HaneiRoom web app on a desktop screen: a sidebar with Home, My Projects and My Inbox, a greeting with New Project and Ask AI buttons, and cards for recent projects.">
+          <div class="app" role="img" aria-label="The HaneiAI web app on a desktop screen: a sidebar with Home, My Projects and My Inbox, a greeting with New Project and Ask AI buttons, and cards for recent projects.">
             <div class="app__ui" aria-hidden="true">
               <aside class="app__side">
                 <div class="app__profile"><span class="app__avatar"></span><span><b>Nhi</b><small>Designer</small></span></div>
@@ -411,32 +422,71 @@
         <p>Scan the room, drop furniture in with AR, buy the exact piece.</p>
       </div>
       <div class="tag-note tag-note--now">
-        <p class="tag-note__k">Hanei · on the web</p>
-        <p>Start from your client's brief. Hanei checks it, then finds furniture to save or export.</p>
+        <p class="tag-note__k">HaneiAI · on the web</p>
+        <p>Start from your client's brief. HaneiAI checks it, then finds furniture to save or export.</p>
       </div>
     </div>
   </div>
 
-  <div class="compare" data-venn>
+  <div class="compare">
     <h3 class="compare__title">Two products, one room</h3>
     <p class="compare__lede">Use one, or both. They meet where it matters: real furniture for a real room.</p>
-    <div class="venn">
-      <span class="venn__circle venn__circle--a" aria-hidden="true"></span>
-      <span class="venn__circle venn__circle--b" aria-hidden="true"></span>
-      <div class="venn__set venn__set--a">
-        <p class="venn__name">HaneiRoom</p>
-        <p class="venn__where">On your phone, with AR</p>
-        <ul><li>Scan your room</li><li>Place a piece where it would go</li><li>Buy the exact piece</li></ul>
+    <div class="duo">
+      <!-- a loose loop drawn behind the two bubbles -->
+      <svg class="duo__swirl" viewBox="0 0 600 520" aria-hidden="true" focusable="false"><path d="M310 500C120 470 40 330 120 220S380 70 470 150 470 380 330 360 170 220 260 120 420 20 560 40"/></svg>
+      <div class="bub bub--room">
+        <span class="bub__face">
+          <svg class="bub__fig" viewBox="0 0 120 120" aria-hidden="true" focusable="false">
+            <g class="bub__body">
+              <use href="#hc-petals" class="hc__line" transform="translate(48 62) scale(.4)"/>
+              <use href="#hc-petals" class="hc__fill" transform="translate(48 62) scale(.4)"/>
+              <circle class="hc__ink" cx="42" cy="58" r="6" fill="#fff"/><circle class="hc__ink" cx="56" cy="55" r="6" fill="#fff"/>
+              <g class="bub__look"><circle cx="45" cy="58" r="3.2" fill="#1e1e1e"/><circle cx="59" cy="55" r="3.2" fill="#1e1e1e"/></g>
+              <path d="M47 66Q50 69 53 66" stroke="#1e1e1e" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+            </g>
+            <g class="bub__device" transform="translate(88 70) rotate(10)">
+              <rect class="hc__ink" x="-14" y="-24" width="28" height="48" rx="6" fill="#253a82"/>
+              <rect x="-10.5" y="-19.5" width="21" height="37" rx="2.5" fill="#d5d8f2"/>
+              <path d="M-7 12H7L4 3H-4Z" fill="#93a4de"/>
+              <path d="M-8 -16h4M-8 -16v4M8 -16h-4M8 -16v4" stroke="#253a82" stroke-width="1.6" stroke-linecap="round"/>
+              <rect class="bub__scan" x="-10.5" y="-19" width="21" height="2.5" rx="1" fill="#ff912c"/>
+            </g>
+          </svg>
+        </span>
+        <div class="bub__text">
+          <p class="bub__name">HaneiRoom</p>
+          <p class="bub__where">On your phone, with AR</p>
+          <ul><li>Scan your room</li><li>Place a piece where it would go</li><li>Buy the exact piece</li></ul>
+        </div>
       </div>
-      <div class="venn__set venn__set--both">
-        <p class="venn__name">Both</p>
-        <ul><li>Real furniture from real shops</li><li>Built around the room you're planning</li></ul>
+      <div class="bub bub--web">
+        <div class="bub__text">
+          <p class="bub__name">HaneiAI</p>
+          <p class="bub__where">On the web, with your client</p>
+          <ul><li>Your client's brief in six guided steps</li><li>Flags what doesn't add up</li><li>Save the list or export it as CSV</li></ul>
+        </div>
+        <span class="bub__face">
+          <svg class="bub__fig" viewBox="0 0 120 120" aria-hidden="true" focusable="false">
+            <g class="bub__body">
+              <use href="#hc-petals" class="hc__line" transform="translate(40 42) scale(.34)"/>
+              <use href="#hc-petals" class="hc__fill" transform="translate(40 42) scale(.34)"/>
+              <circle class="hc__ink" cx="34" cy="38" r="5.5" fill="#fff"/><circle class="hc__ink" cx="47" cy="35" r="5.5" fill="#fff"/>
+              <g class="bub__look"><circle cx="36" cy="40.5" r="3" fill="#1e1e1e"/><circle cx="49" cy="37.5" r="3" fill="#1e1e1e"/></g>
+            </g>
+            <g class="bub__device" transform="translate(66 80)">
+              <path class="hc__ink" d="M-8 16H8L12 28H-12Z" fill="#253a82"/>
+              <rect class="hc__ink" x="-36" y="-28" width="72" height="46" rx="5" fill="#253a82"/>
+              <rect x="-32" y="-24" width="64" height="38" rx="2" fill="#fbe3cc"/>
+              <rect x="-29" y="-21" width="11" height="32" rx="2" fill="#fff" opacity=".85"/>
+              <rect x="-14" y="-20" width="26" height="4" rx="2" fill="#253a82"/>
+              <rect x="-14" y="-12" width="13" height="11" rx="2" fill="#fff"/><rect x="1" y="-12" width="13" height="11" rx="2" fill="#fff"/>
+              <rect x="-14" y="3" width="15" height="5" rx="2.5" fill="#ff912c"/>
+              <path class="bub__cursor" d="M18 2l9 5-4 1 2 5-2 1-2-5-3 3z" fill="#1e1e1e" stroke="#fff" stroke-width=".8"/>
+            </g>
+          </svg>
+        </span>
       </div>
-      <div class="venn__set venn__set--b">
-        <p class="venn__name">Hanei</p>
-        <p class="venn__where">On the web, with your client</p>
-        <ul><li>Your client's brief in six guided steps</li><li>Flags what doesn't add up</li><li>Save the list or export it as CSV</li></ul>
-      </div>
+      <p class="duo__both"><b>Both</b> Real furniture from real shops, built around the room you're planning.</p>
     </div>
   </div>
 
@@ -484,14 +534,6 @@
       </div>
       <div class="demo__done" aria-hidden="true">
         <svg class="hc" viewBox="0 0 260 270" aria-hidden="true" focusable="false">
-          <defs>
-            <!-- line boil: the noise reseeds a few times a second so every edge wobbles like a hand-drawn frame -->
-            <filter id="hc-boil" x="-10%" y="-10%" width="120%" height="120%">
-              <feTurbulence type="fractalNoise" baseFrequency=".04" numOctaves="2" seed="1" result="n"><animate attributeName="seed" values="1;5;9;3" dur=".48s" calcMode="discrete" repeatCount="indefinite"/></feTurbulence>
-              <feDisplacementMap in="SourceGraphic" in2="n" scale="4" xChannelSelector="R" yChannelSelector="G"/>
-            </filter>
-            <g id="hc-petals"><ellipse cx="0" cy="-52" rx="24" ry="62" transform="rotate(-8)"/><ellipse cx="0" cy="-48" rx="26" ry="58" transform="rotate(38)"/><ellipse cx="0" cy="-44" rx="27" ry="54" transform="rotate(82)"/><ellipse cx="0" cy="-48" rx="25" ry="58" transform="rotate(128)"/><ellipse cx="0" cy="-50" rx="24" ry="60" transform="rotate(172)"/><ellipse cx="0" cy="-46" rx="26" ry="56" transform="rotate(215)"/><ellipse cx="0" cy="-48" rx="27" ry="58" transform="rotate(262)"/><ellipse cx="0" cy="-52" rx="25" ry="62" transform="rotate(305)"/><circle r="34"/></g>
-          </defs>
           <ellipse class="hc__shadow" cx="130" cy="260" rx="78" ry="9"/>
           <g class="hc__fig">
             <g class="hc__roll" transform="translate(48 214) rotate(-16)">

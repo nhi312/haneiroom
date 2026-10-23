@@ -1,6 +1,6 @@
 # HaneiRoom landing page
 
-A scroll-driven story in three chapters, drawn in cut paper: the mess getting cleaned up, the process as torn color bands, and two products side by side: HaneiRoom on your phone (AR) and Hanei on the web. Then a demo sign-up and the quilt footer. Static HTML, CSS and vanilla JS, no build step and no animation library.
+A scroll-driven story in three chapters, drawn in cut paper: the mess getting cleaned up, the process as torn color bands, and two products side by side: HaneiRoom on your phone (AR) and HaneiAI on the web. Then a demo sign-up and the quilt footer. Static HTML, CSS and vanilla JS, no build step and no animation library.
 
 ## Run it
 
@@ -23,8 +23,8 @@ Then open http://localhost:4173. (`.claude/launch.json` has the same command as 
 
 - **01 The mess:** on load, each tool is outlined in pencil, then painted. Scrolling (pinned on every screen size) piles on the confusion: other chairs, notes, question marks, extra dimensions. Then the tools and the confusion fly out together and the title changes to "Hanei helps you clean it up." The same pile comes back sorted: six framed cards on a paper collage (the plan with its 4.2 m and 3.8 m measurements, the brief, the palette, and the seating, lighting and storage picks). The measurements stay on top the whole time.
 - **02 The process:** each step is its own color band with a curvy torn top edge and paper grain, with the step's tools filling the side the text leaves empty. The step number is printed on a strip stuck across the tear. A dashed trail draws itself as you scroll and runs through the numbers; each band stays a pencil sketch until the trail reaches it.
-- **03 What changed:** HaneiRoom (the AR phone app) and Hanei (the web app) are two separate products for two jobs, not versions. The letters of "around" settle in close together, then keep a gentle wiggle. On large screens the title and a caption naming the product on screen stay pinned above a glass frame: the phone plays the HaneiRoom AR demo, then the frame widens around Hanei on the web, built on the design system's SidebarNav and ProjectCard (Inter throughout), where a cursor makes a new project. A Venn diagram below shows what each product does and where they meet. Smaller screens stack the phone and the desktop and play each demo as it crosses the screen.
-- **Book a demo:** rows of real Hanei features slide as you scroll; two sticky notes wiggle every few seconds.
+- **03 What changed:** HaneiRoom (the AR phone app) and HaneiAI (the web app) are two separate products for two jobs, not versions. The letters of "around" settle in close together, then keep a gentle wiggle. On large screens the title and a caption naming the product on screen stay pinned above a glass frame: the phone plays the HaneiRoom AR demo, then the frame widens around HaneiAI on the web, built on the design system's SidebarNav and ProjectCard (Inter throughout), where a cursor makes a new project. Below, two speech bubbles introduce the products, each with the Hanei flower at work (scanning with a phone, planning at a desktop), and a note says what both share. Smaller screens pin one screen where the phone scan plays, fades, and the desktop takes its place.
+- **Book a demo:** rows of real HaneiAI features slide as you scroll; two sticky notes wiggle every few seconds.
 - Buttons, pills, product cards and frames use one iPhone-style liquid glass recipe (the `--lg-*` variables in `landing.css`).
 - Pinned scenes are tall sections with a `position: sticky` stage, so scrolling stays native.
 - With `prefers-reduced-motion`, or without JavaScript, every scene shows its finished state.
