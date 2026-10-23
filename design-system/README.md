@@ -38,7 +38,7 @@ HaneiRoom is an AI assistant for interior designers: capture a client brief, let
 - Set titles in `text-heading` (navy-700); a two-line title takes `text-accent` (rust-600) on line 2.
 - Set card and step titles in `h3` (Inter bold). Instrument Serif is for large titles only, never body text, buttons, navigation or anything under 24px.
 - Set all other text in Inter (`body-lg`, `body`, `label`, `small`, `caption`).
-- Instrument Serif loads from `fonts/` under the SIL Open Font License 1.1 (see `fonts/LICENSE-instrument-serif-OFL.txt`). It has one weight (plus an italic), so never bold a title.
+- Instrument Serif loads from `fonts/` under the SIL Open Font License 1.1 (see `fonts/LICENSE-instrument-serif-OFL.txt`). Titles are bold (700). The font ships one weight, so browsers draw the bold themselves.
 - Every style lists its mobile size in its usage note. Switch at 768px.
 
 ## Layout, radius and depth
