@@ -26,6 +26,7 @@
   <link rel="stylesheet" href="assets/css/landing.css">
   <script src="assets/js/config.js"></script>
   <script src="assets/js/landing.js" defer></script>
+  <script src="assets/js/reels.js" defer></script>
 </head>
 <body>
 <!-- shared drawing: the Hanei flower and the boiling sketch line, used by the compare bubbles and the demo thank-you -->
@@ -331,35 +332,7 @@
         <span class="frame__corner frame__corner--bl" aria-hidden="true"><!-- art:frame-corner --><svg class="art" viewBox="0 0 110 110" aria-hidden="true" focusable="false"><path class="s" pathLength="1" fill="#fcc490" d="M39.9 32.1C40.2 34.1 44.8 34.7 47.1 35.3C49.4 36 51.7 35.9 53.9 36.1C56.2 36.2 58.4 36.3 60.6 36.3C62.9 36.4 65.1 36.5 67.3 36.3C69.5 36 71.7 35.3 73.8 34.7C76 34.1 78.1 33.5 80.3 32.7C82.4 31.9 84.5 31.1 86.6 30.1C88.8 29.1 91 28.1 93.1 26.9C95.2 25.7 97 23.3 99.2 22.8C101.4 22.3 106 23.9 106 23.9C106 24 101.4 24.2 99.1 23.1C96.7 22.1 94.2 19.3 91.8 17.7C89.4 16 87 14.2 84.6 13C82.2 11.7 79.9 10.8 77.6 10.2C75.3 9.7 73 9.4 70.8 9.5C68.5 9.5 66.4 9.9 64.2 10.5C62 11 59.8 11.7 57.7 12.9C55.6 14.1 53.7 15.8 51.7 17.5C49.7 19.3 47.5 21 45.6 23.4C43.6 25.8 39.7 30.1 39.9 32.1Z"/><path class="s" pathLength="1" fill="#fcc490" d="M32.1 40.2C30.1 40 26 43.9 23.6 45.8C21.1 47.7 19.2 49.6 17.5 51.6C15.7 53.6 14.2 55.7 13 57.8C11.8 59.9 10.9 62 10.3 64.2C9.6 66.3 9.1 68.6 9.1 70.8C9.2 73 9.9 75.2 10.5 77.5C11.2 79.8 11.8 82.2 13 84.6C14.1 87 15.8 89.5 17.5 91.9C19.1 94.3 21.9 96.8 23.1 99.2C24.2 101.5 24.3 105.9 24.3 106C24.3 106 22.7 101.4 23.1 99.2C23.5 97.1 25.5 95 26.6 92.9C27.8 90.8 29.1 88.8 30.2 86.7C31.2 84.6 32.2 82.5 32.9 80.3C33.7 78.2 34.3 76 34.8 73.8C35.3 71.7 35.7 69.5 36 67.3C36.2 65.1 36.2 62.9 36.3 60.6C36.3 58.4 36.5 56.2 36.3 53.9C36.2 51.6 36.2 49.3 35.5 47C34.8 44.7 34.1 40.4 32.1 40.2Z"/><path class="s" pathLength="1" fill="#ff912c" d="M61.4 34C61.5 39.4 60.1 45.7 57 50.2C53.9 54.7 48.1 59.3 42.8 61.1C37.5 62.9 30.5 62.9 25.2 61.2C19.9 59.4 14.2 55 11 50.5C7.7 46 5.5 39.4 5.5 34C5.6 28.6 7.9 22.4 11.2 17.8C14.5 13.3 19.9 8.7 25.1 6.8C30.4 4.9 37.5 4.8 42.7 6.7C48 8.5 53.6 13.4 56.7 17.9C59.8 22.5 61.4 28.6 61.4 34Z"/><path class="s" pathLength="1" fill="#fcc490" d="M49 34C48.9 36.9 47.8 40.5 46.1 42.8C44.4 45.1 41.4 46.9 38.7 47.8C35.9 48.7 32.3 49.1 29.5 48.3C26.6 47.4 23.5 45.3 21.8 42.9C20 40.5 18.8 37 18.9 34C18.9 31 20.2 27.3 21.9 25C23.6 22.6 26.4 20.6 29.2 19.7C32 18.9 35.8 19 38.6 19.9C41.5 20.9 44.7 23.1 46.4 25.4C48.2 27.8 49 31.1 49 34Z"/><path class="s" pathLength="1" fill="#a85a22" d="M39.9 34C39.9 35.4 39.3 37.2 38.3 38.2C37.4 39.2 35.4 40 34 40C32.6 40.1 30.7 39.3 29.7 38.3C28.7 37.3 28.1 35.4 28.1 34C28.1 32.6 28.7 30.8 29.7 29.8C30.7 28.9 32.6 28.1 34 28.1C35.4 28.1 37.2 28.8 38.2 29.8C39.2 30.8 39.8 32.6 39.9 34Z"/></svg><!-- /art:frame-corner --></span>
         <span class="frame__corner frame__corner--br" aria-hidden="true"><!-- art:frame-corner --><svg class="art" viewBox="0 0 110 110" aria-hidden="true" focusable="false"><path class="s" pathLength="1" fill="#fcc490" d="M39.9 32.1C40.2 34.1 44.8 34.7 47.1 35.3C49.4 36 51.7 35.9 53.9 36.1C56.2 36.2 58.4 36.3 60.6 36.3C62.9 36.4 65.1 36.5 67.3 36.3C69.5 36 71.7 35.3 73.8 34.7C76 34.1 78.1 33.5 80.3 32.7C82.4 31.9 84.5 31.1 86.6 30.1C88.8 29.1 91 28.1 93.1 26.9C95.2 25.7 97 23.3 99.2 22.8C101.4 22.3 106 23.9 106 23.9C106 24 101.4 24.2 99.1 23.1C96.7 22.1 94.2 19.3 91.8 17.7C89.4 16 87 14.2 84.6 13C82.2 11.7 79.9 10.8 77.6 10.2C75.3 9.7 73 9.4 70.8 9.5C68.5 9.5 66.4 9.9 64.2 10.5C62 11 59.8 11.7 57.7 12.9C55.6 14.1 53.7 15.8 51.7 17.5C49.7 19.3 47.5 21 45.6 23.4C43.6 25.8 39.7 30.1 39.9 32.1Z"/><path class="s" pathLength="1" fill="#fcc490" d="M32.1 40.2C30.1 40 26 43.9 23.6 45.8C21.1 47.7 19.2 49.6 17.5 51.6C15.7 53.6 14.2 55.7 13 57.8C11.8 59.9 10.9 62 10.3 64.2C9.6 66.3 9.1 68.6 9.1 70.8C9.2 73 9.9 75.2 10.5 77.5C11.2 79.8 11.8 82.2 13 84.6C14.1 87 15.8 89.5 17.5 91.9C19.1 94.3 21.9 96.8 23.1 99.2C24.2 101.5 24.3 105.9 24.3 106C24.3 106 22.7 101.4 23.1 99.2C23.5 97.1 25.5 95 26.6 92.9C27.8 90.8 29.1 88.8 30.2 86.7C31.2 84.6 32.2 82.5 32.9 80.3C33.7 78.2 34.3 76 34.8 73.8C35.3 71.7 35.7 69.5 36 67.3C36.2 65.1 36.2 62.9 36.3 60.6C36.3 58.4 36.5 56.2 36.3 53.9C36.2 51.6 36.2 49.3 35.5 47C34.8 44.7 34.1 40.4 32.1 40.2Z"/><path class="s" pathLength="1" fill="#ff912c" d="M61.4 34C61.5 39.4 60.1 45.7 57 50.2C53.9 54.7 48.1 59.3 42.8 61.1C37.5 62.9 30.5 62.9 25.2 61.2C19.9 59.4 14.2 55 11 50.5C7.7 46 5.5 39.4 5.5 34C5.6 28.6 7.9 22.4 11.2 17.8C14.5 13.3 19.9 8.7 25.1 6.8C30.4 4.9 37.5 4.8 42.7 6.7C48 8.5 53.6 13.4 56.7 17.9C59.8 22.5 61.4 28.6 61.4 34Z"/><path class="s" pathLength="1" fill="#fcc490" d="M49 34C48.9 36.9 47.8 40.5 46.1 42.8C44.4 45.1 41.4 46.9 38.7 47.8C35.9 48.7 32.3 49.1 29.5 48.3C26.6 47.4 23.5 45.3 21.8 42.9C20 40.5 18.8 37 18.9 34C18.9 31 20.2 27.3 21.9 25C23.6 22.6 26.4 20.6 29.2 19.7C32 18.9 35.8 19 38.6 19.9C41.5 20.9 44.7 23.1 46.4 25.4C48.2 27.8 49 31.1 49 34Z"/><path class="s" pathLength="1" fill="#a85a22" d="M39.9 34C39.9 35.4 39.3 37.2 38.3 38.2C37.4 39.2 35.4 40 34 40C32.6 40.1 30.7 39.3 29.7 38.3C28.7 37.3 28.1 35.4 28.1 34C28.1 32.6 28.7 30.8 29.7 29.8C30.7 28.9 32.6 28.1 34 28.1C35.4 28.1 37.2 28.8 38.2 29.8C39.2 30.8 39.8 32.6 39.9 34Z"/></svg><!-- /art:frame-corner --></span>
         <span class="frame__crest" aria-hidden="true"><!-- art:frame-crest --><svg class="art" viewBox="0 0 180 70" aria-hidden="true" focusable="false"><path class="s" pathLength="1" fill="#fcc490" d="M90.2 49.9C90.8 47.8 86.7 41.9 84.8 38.6C82.8 35.4 80.5 32.9 78.3 30.5C76.1 28 74 25.8 71.7 24C69.4 22.1 67 20.7 64.6 19.5C62.1 18.3 59.5 17.4 56.9 17C54.2 16.6 51.5 16.8 48.6 17.1C45.7 17.5 42.6 17.9 39.6 18.9C36.5 20 33.4 21.8 30.3 23.5C27.1 25.2 23.6 27.9 20.6 29.1C17.5 30.2 12 30.2 12 30.2C12 30.1 18 28.4 20.6 28.9C23.3 29.3 25.5 31.6 27.9 33C30.3 34.4 32.6 35.9 35.1 37.1C37.6 38.4 40.1 39.3 42.6 40.3C45.1 41.4 47.6 42.5 50.1 43.5C52.6 44.6 55.1 45.6 57.7 46.5C60.2 47.3 62.8 47.8 65.4 48.5C68.1 49.1 70.7 49.9 73.3 50.3C76 50.7 78.5 51 81.3 51C84.2 50.9 89.7 51.9 90.2 49.9Z"/><path class="s" pathLength="1" fill="#fcc490" d="M90 50.2C90.5 52.3 95.8 51.1 98.6 51.1C101.4 51.2 104 50.7 106.7 50.3C109.4 49.9 112 49.4 114.6 48.7C117.2 48 119.7 46.9 122.2 46C124.8 45.2 127.4 44.5 129.9 43.6C132.5 42.7 135 41.6 137.5 40.6C140 39.5 142.6 38.6 145 37.3C147.4 36 149.7 34.3 152.1 33C154.5 31.6 156.8 29.6 159.4 29C162.1 28.5 168 29.8 168 29.8C168 29.8 162.4 30.2 159.3 29.2C156.3 28.1 152.9 25.1 149.8 23.4C146.6 21.7 143.4 20 140.4 18.9C137.3 17.8 134.3 17.3 131.4 17C128.6 16.8 125.9 16.9 123.2 17.3C120.5 17.7 117.9 18.3 115.4 19.4C112.9 20.5 110.4 21.9 108.1 23.7C105.8 25.6 103.9 28 101.8 30.5C99.6 33 97.2 35.4 95.2 38.7C93.3 42 89.4 48.1 90 50.2Z"/><path class="s" pathLength="1" fill="#ff912c" d="M116.3 40C116.4 45.1 114.6 51.4 111.5 55.5C108.5 59.5 103 62.8 98.1 64.4C93.2 65.9 87 66.1 82.2 64.7C77.4 63.2 72.3 59.6 69.2 55.5C66.2 51.4 64 45.2 64 40C63.9 34.8 65.9 28.3 68.9 24.3C71.9 20.3 77 17.4 81.9 15.9C86.8 14.4 93.4 13.9 98.2 15.4C103.1 16.9 108.1 20.5 111.1 24.6C114.1 28.7 116.2 34.9 116.3 40Z"/><path class="s" pathLength="1" fill="#fcc490" d="M101.9 40C101.8 42.3 101 45.2 99.7 47.1C98.3 49 96 50.7 93.8 51.4C91.6 52.1 88.5 51.9 86.2 51.2C84 50.5 81.6 49 80.2 47.1C78.8 45.3 77.8 42.4 77.7 40C77.7 37.6 78.6 34.8 80 32.8C81.5 30.9 84.1 29 86.4 28.3C88.6 27.7 91.4 28 93.7 28.7C96 29.5 98.6 31.2 100 33.1C101.3 34.9 101.9 37.7 101.9 40Z"/></svg><!-- /art:frame-crest --></span>
-        <div class="frame__inner">
-          <div class="app" role="img" aria-label="The HaneiAI web app on a desktop screen: a sidebar with Home, My Projects and My Inbox, a greeting with New Project and Ask AI buttons, and cards for recent projects.">
-            <div class="app__ui" aria-hidden="true">
-              <aside class="app__side">
-                <div class="app__profile"><span class="app__avatar"></span><span><b>Nhi</b><small>Designer</small></span></div>
-                <ul class="app__nav">
-                  <li class="on"><img src="design-system/icons/home.svg" alt="">Home</li>
-                  <li><img src="design-system/icons/folder.svg" alt="">My Projects</li>
-                  <li><img src="design-system/icons/inbox.svg" alt="">My Inbox</li>
-                </ul>
-                <div class="app__survey">We Want Your Thoughts!</div>
-                <p class="app__setting"><img src="design-system/icons/user.svg" alt="">Setting</p>
-              </aside>
-              <div class="app__panel">
-                <p class="app__chips"><span>Thursday</span><span>2:30 PM</span></p>
-                <p class="app__hello">Good Afternoon, Nhi<span>How can I help you today?</span></p>
-                <p class="app__actions"><span class="gbtn gbtn--warm" data-new><img src="design-system/icons/plus-circle.svg" alt="">New Project</span><span class="gbtn gbtn--navy"><img src="design-system/icons/sparkle.svg" alt="">Ask AI</span></p>
-                <p class="app__sec">My <b>Recent Projects</b></p>
-                <span class="app__cursor"><svg viewBox="0 0 24 24"><path d="M4 2l15 9-6.5 1.5L16 20l-3 1.5-3.5-7.5L4 18z"/></svg></span>
-                <div class="app__cards">
-                  <div class="proj proj--new" data-proj><div><b>Lounge Refresh</b><small>Client: Linh Tran</small><small class="proj__meta">Created: 22/10/2026, 2:31:08PM</small><p class="proj__sw"><i style="background:#f4efe6"></i><i style="background:#d9c3a5"></i><i style="background:#a67c52"></i><i style="background:#7fb07a"></i></p></div><div class="proj__end"><span class="proj__status" data-status-done>Status: Done</span><span class="proj__go">&rarr;</span></div></div>
-                  <div class="proj"><div><b>Nessa's June Apartment</b><small>Client: Nessa Hoang</small><small class="proj__meta">Created: 11/12/2025, 11:55:26PM</small><p class="proj__sw"><i style="background:#ff912c"></i><i style="background:#253a82"></i><i style="background:#fbe3cc"></i><i style="background:#93a4de"></i></p></div><div class="proj__end"><span class="proj__status">Status: Draft</span><span class="proj__go">&rarr;</span></div></div>
-                  <div class="proj"><div><b>Villa Kitchen</b><small>Client: Bao Nguyen</small><small class="proj__meta">Created: 09/10/2026, 9:12:40AM</small><p class="proj__sw"><i style="background:#253a82"></i><i style="background:#93a4de"></i><i style="background:#faf4ea"></i><i style="background:#fcc490"></i></p></div><div class="proj__end"><span class="proj__status">Status: Draft</span><span class="proj__go">&rarr;</span></div></div>
-                  <div class="proj"><div><b>Studio Flat</b><small>Client: An Pham</small><small class="proj__meta">Created: 02/10/2026, 4:05:17PM</small><p class="proj__sw"><i style="background:#3f7a4e"></i><i style="background:#fbe3cc"></i><i style="background:#ff912c"></i><i style="background:#3b2a14"></i></p></div><div class="proj__end"><span class="proj__status">Status: Done</span><span class="proj__go">&rarr;</span></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <div class="frame__inner"></div>
       </div>
 
       <figure class="scan" role="img" aria-label="Animation of HaneiRoom on a phone, not a live scan: it scans an empty room, finds and measures the floor, shows a pink velvet accent chair, places that same chair on the floor, then opens its shop card with a description and the price.">
@@ -421,9 +394,93 @@
         <p class="tag-note__k">HaneiRoom · on your phone</p>
         <p>Scan the room, drop furniture in with AR, buy the exact piece.</p>
       </div>
-      <div class="tag-note tag-note--now">
-        <p class="tag-note__k">HaneiAI · on the web</p>
-        <p>Start from your client's brief. HaneiAI checks it, then finds furniture to save or export.</p>
+      <!-- HaneiAI: the phone breaks into three screens, one per feature. Each
+           plays its finished frame as markup; reels.js rewinds and loops it while live. -->
+      <div class="reels">
+
+        <!-- 01 · Idea Input -->
+        <figure class="reel" data-reel="input">
+          <div class="reel__win">
+            <p class="reel__bar" aria-hidden="true"><i></i><i></i><i></i><span>Idea Input</span></p>
+            <div class="reel__view" aria-hidden="true">
+              <div class="st">
+                <p class="st__h">Project Information</p>
+                <div class="st__row">
+                  <p class="st__f">Project's Name<span data-type="Lounge Refresh">Lounge Refresh</span></p>
+                  <p class="st__f">Client's Name<span data-type="Linh Tran">Linh Tran</span></p>
+                </div>
+                <p class="st__k">Design's Adjectives <small><b data-count>5</b>/5</small></p>
+                <p class="st__chips">
+                  <span class="on" data-pick="1">Cozy</span><span>Eclectic</span><span class="on" data-pick="2">Warm</span><span>Minimalist</span>
+                  <span class="on" data-pick="3">Playful</span><span>Bold</span><span>Airy</span><span class="on" data-pick="4">Soft</span>
+                  <span>Retro</span><span class="on" data-pick="5">Modern</span><span>Rustic</span>
+                </p>
+                <p class="st__k">Color Palette <small>Min 1, Max 5</small></p>
+                <p class="st__pal">
+                  <i class="on" style="background:#ff912c"></i><i class="on" style="background:#253a82"></i><i class="on" style="background:#93a4de"></i><i class="on" style="background:#fcc490"></i>
+                  <span class="st__add" data-add>+ Add Color</span>
+                </p>
+                <div class="st__row st__row--end">
+                  <p class="st__f">Budget<span class="st__usd"><b>USD</b><em data-type="4,000">4,000</em></span></p>
+                  <span class="st__btn" data-next>Next Page</span>
+                </div>
+              </div>
+              <span class="reel__cursor"><svg viewBox="0 0 24 24"><path d="M4 2l15 9-6.5 1.5L16 20l-3 1.5-3.5-7.5L4 18z"/></svg></span>
+            </div>
+          </div>
+          <figcaption class="reel__cap"><b><i>01</i>Idea Input</b>Sit with your client and fill in the intake: five words for the style, a palette, a budget.</figcaption>
+        </figure>
+
+        <!-- 02 · Idea Brief -->
+        <figure class="reel" data-reel="brief">
+          <div class="reel__win">
+            <p class="reel__bar" aria-hidden="true"><i></i><i></i><i></i><span>Idea Brief</span></p>
+            <div class="reel__view" aria-hidden="true">
+              <div class="st st--center">
+                <p class="st__k">Pre-Check your Prompts!</p>
+                <div class="st__card">
+                  <p><b>Linh Tran:</b> <span data-brief="Cozy, Warm, Playful, Soft, Modern style with 4 colors, a budget around $4,000, and 9 furniture items.">Cozy, Warm, Playful, Soft, Modern style with 4 colors, a budget around $4,000, and 9 furniture items.</span></p>
+                  <p class="st__sw"><i class="on" style="background:#ff912c"></i><i class="on" style="background:#253a82"></i><i class="on" style="background:#93a4de"></i><i class="on" style="background:#fcc490"></i></p>
+                </div>
+                <p class="st__btns"><span class="st__btn st__btn--ghost">Edit brief</span><span class="st__btn st__btn--warm" data-source>Source Items</span></p>
+                <div class="st__search" data-search>
+                  <span class="st__track"><i data-bar></i></span>
+                  <img src="design-system/icons/sofa.svg" alt="" width="40" height="40">
+                  <b>Searching for Products</b>
+                  <small data-line>9 products found</small>
+                </div>
+              </div>
+              <span class="reel__cursor"><svg viewBox="0 0 24 24"><path d="M4 2l15 9-6.5 1.5L16 20l-3 1.5-3.5-7.5L4 18z"/></svg></span>
+            </div>
+          </div>
+          <figcaption class="reel__cap"><b><i>02</i>Idea Brief</b>HaneiAI turns the intake into one sentence. Check it, then let it search.</figcaption>
+        </figure>
+
+        <!-- 03 · Product sort out -->
+        <figure class="reel" data-reel="sort">
+          <div class="reel__win">
+            <p class="reel__bar" aria-hidden="true"><i></i><i></i><i></i><span>Product sort out</span></p>
+            <div class="reel__view" aria-hidden="true">
+              <div class="st">
+                <p class="st__top"><span class="st__h st__h--sm">Recommended Products</span><span class="st__count">✓ Selected (<b data-count>3</b>)</span></p>
+                <ul class="st__grid">
+                  <li class="kept" data-card><img src="assets/img/products/accent-chair-pink-velvet.webp" alt="" width="492" height="620"><p><b>Velvet Chair</b><span>$289</span></p><span class="st__marks"><i class="y">✓</i><i class="n">✕</i></span></li>
+                  <li class="dropped" data-card><img src="assets/img/products/armchair-grey-velvet.webp" alt="" width="494" height="620"><p><b>Grey Armchair</b><span>$340</span></p><span class="st__marks"><i class="y">✓</i><i class="n">✕</i></span></li>
+                  <li class="kept" data-card><img src="assets/img/products/side-table-mint.webp" alt="" width="483" height="620"><p><b>Mint Side Table</b><span>$79</span></p><span class="st__marks"><i class="y">✓</i><i class="n">✕</i></span></li>
+                  <li data-card><img src="assets/img/products/cube-shelf-white.jpg" alt="" width="560" height="560"><p><b>Cube Shelf</b><span>$149</span></p><span class="st__marks"><i class="y">✓</i><i class="n">✕</i></span></li>
+                  <li class="kept" data-card><img src="assets/img/products/floor-lamp-black.webp" alt="" width="354" height="620"><p><b>Floor Lamp</b><span>$119</span></p><span class="st__marks"><i class="y">✓</i><i class="n">✕</i></span><span class="st__ask" data-ask>Ask AI</span></li>
+                  <li data-card><img src="assets/img/products/wavy-mirror-white.jpg" alt="" width="560" height="560"><p><b>Wavy Mirror</b><span>$185</span></p><span class="st__marks"><i class="y">✓</i><i class="n">✕</i></span></li>
+                </ul>
+                <p class="st__bubble" data-bubble>A slim black line that grounds the soft colors. Put it behind the velvet chair.</p>
+                <p class="st__btns st__btns--end"><span class="st__btn st__btn--warm" data-export>Export CSV</span></p>
+                <div class="st__done" data-done><b>WooHoo!<span>All Done</span></b><small>3 pieces · $487 · exported</small></div>
+              </div>
+              <span class="reel__cursor"><svg viewBox="0 0 24 24"><path d="M4 2l15 9-6.5 1.5L16 20l-3 1.5-3.5-7.5L4 18z"/></svg></span>
+            </div>
+          </div>
+          <figcaption class="reel__cap"><b><i>03</i>Product sort out</b>Keep or drop each piece, ask HaneiAI about one, then export the list.</figcaption>
+        </figure>
+
       </div>
     </div>
   </div>
@@ -605,7 +662,7 @@
       <a href="#mess">The mess</a>
       <a href="#process">The process</a>
       <a href="#changed">What changed</a>
-    </nav>
+      </nav>
     <div class="foot__mid">
       <a href="#top" class="foot__logo" aria-label="HaneiRoom, back to top"><img src="design-system/logo/haneiroom-logo.png" alt="" width="260" height="218"></a>
       <p>An AI assistant for interior designers.<br>Brief, check, furnish.</p>

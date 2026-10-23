@@ -202,18 +202,12 @@
   /* ---------------------------------------------------------- 03 what changed */
   var aroundHead = $('[data-around]');
   var gallery = $('.gallery'), stage = $('.gallery__stage');
-  var inner = $('.frame__inner'), ui = $('.app__ui');
-  var scan = $('.scan'), thenNote = $('.tag-note--then'), nowNote = $('.tag-note--now');
-  var G = null, galTop = 0, galH = 0, panAmp = 3;
-
-  function uiWidth() {
-    var w = parseFloat(getComputedStyle(inner).getPropertyValue('--ui-w')) || 1000;
-    return w;
-  }
+  var scan = $('.scan'), thenNote = $('.tag-note--then'), reels = $$('.reel');
+  var G = null, S = null, galTop = 0, galH = 0, panAmp = 3;
 
   function layoutGallery() {
-    [stage, scan, thenNote, nowNote, ui].forEach(function (el) { el.removeAttribute('style'); });
-    G = null;
+    [stage, scan, thenNote].concat(reels).forEach(function (el) { el.removeAttribute('style'); });
+    G = S = null;
     // The room photo covers the screen. A wide screen sees nearly all of it, so the
     // camera only drifts; a phone sees a third, so it sweeps from the door to the window.
     var W = Math.max(vw, vh * 1264 / 843);
@@ -221,39 +215,63 @@
     // the plane and its arrows span half the photo; keep them clear of the tool rail
     scan.style.setProperty('--fit', Math.min(1, vw * .84 / (W * .495)).toFixed(3));
     if (!pinned()) {
-      ui.style.setProperty('--ui-s', (inner.clientWidth / uiWidth()).toFixed(4));
+      if (moving()) layoutStack();
       return;
     }
     var top = 150, b = 26; // room for the pinned title above the frame
     var avail = (vh - top - 28) * .9;
     var fh0 = Math.min(avail, 660) - 2 * b, fw0 = fh0 * 393 / 852;
-    var fw1 = Math.min(vw * (vw < 1280 ? .54 : .58), 980), fh1 = fw1 * .625;
-    if (fh1 + 2 * b > avail) { fh1 = avail - 2 * b; fw1 = fh1 / .625; }
-    var side = (vw - fw1 - 2 * b) / 2;
     var cy = top + (vh - top) / 2;
-    G = { fw0: fw0, fh0: fh0, fw1: fw1, fh1: fh1, cy: cy };
+    // the three screens sit in a row under the title, each with its caption below
+    var gap = 24, capH = 84;
+    var rw = Math.min((vw - 80 - 2 * gap) / 3, 460), rh = reelH(rw);
+    if (rh + capH > vh - top - 20) { rh = vh - top - 20 - capH; rw = reelW(rh); }
+    var x0 = (vw - 3 * rw - 2 * gap) / 2, y0 = top + (vh - top - rh - capH) / 2;
+    G = {
+      cy: cy,
+      phone: { x: vw / 2 - fw0 / 2 - b, y: cy - fh0 / 2 - b, w: fw0 + 2 * b, h: fh0 + 2 * b },
+      slots: [0, 1, 2].map(function (i) { return { x: x0 + i * (rw + gap), y: y0, w: rw, h: rh }; })
+    };
     stage.style.setProperty('--cy', cy.toFixed(0) + 'px');
+    stage.style.setProperty('--fw', fw0.toFixed(1));
+    stage.style.setProperty('--fh', fh0.toFixed(1));
 
+    var side = (vw - fw0) / 2 - b;
     var noteW = clamp(side - 28, 150, 240);
     thenNote.style.width = noteW + 'px';
     // left of the phone, below the palette; the chair card sits on its right
     thenNote.style.left = (vw / 2 - fw0 / 2 - b - 40 - noteW).toFixed(0) + 'px';
     thenNote.style.top = (cy + 20).toFixed(0) + 'px';
-    var nowW = clamp(side + 20, 170, 250);
-    nowNote.style.width = nowW + 'px';
-    // the sheet and the chair card hold the right of the desktop, so its note
-    // tucks over the lower-left corner, where the phone's note sat before
-    nowNote.style.left = Math.max(16, vw / 2 - fw1 / 2 - b + 44 - nowW).toFixed(0) + 'px';
-    nowNote.style.top = (cy + fh1 / 2 - 60).toFixed(0) + 'px';
     galTop = docTop(gallery);
     galH = gallery.offsetHeight;
   }
 
-  /* HaneiRoom's scan plays across the screen, then HaneiAI makes a project. Both run
-     from a 0..1 progress, so the same code serves the pinned stage and the stack. */
+  // A HaneiAI screen is a 36px title bar and a 10px rim around a 440 × 400 stage.
+  function reelH(w) { return 46 + (w - 20) * 400 / 440; }
+  function reelW(h) { return 20 + (h - 46) * 440 / 400; }
+
+  // Stacked: the camera view shrinks into a phone, which breaks into three small
+  // screens down the page, nudged left, right, left. When a row gives bigger
+  // screens (a phone on its side), they sit side by side instead.
+  function layoutStack() {
+    var top = 76, H = vh - top - 16, gap = 12, slots;
+    var cw = Math.min(reelW((H - 2 * gap) / 3), vw * .76, 460);
+    var rowW = Math.min((vw - 32 - 2 * gap) / 3, reelW(H), 460);
+    if (rowW > cw) {
+      var rh0 = reelH(rowW), x0 = (vw - 3 * rowW - 2 * gap) / 2;
+      slots = [0, 1, 2].map(function (i) { return { x: x0 + i * (rowW + gap), y: top + (H - rh0) / 2, w: rowW, h: rh0 }; });
+    } else {
+      var rh = reelH(cw), y0 = top + (H - 3 * rh - 2 * gap) / 2, nudge = Math.min(cw * .22, (vw - 32 - cw) / 2);
+      slots = [0, 1, 2].map(function (i) { return { x: (vw - cw) / 2 + (i === 1 ? nudge : -nudge), y: y0 + i * (rh + gap), w: cw, h: rh }; });
+    }
+    var pw = Math.min(vw * .64, 320, (H - 40) / 2.05), ph = Math.min(H - 40, pw * 2.05);
+    S = { phone: { x: (vw - pw) / 2, y: top + H - ph - 8, w: pw, h: ph }, slots: slots };
+  }
+
+  /* HaneiRoom's scan plays across the screen, then the phone breaks into HaneiAI's
+     three screens. Both run from a 0..1 progress, so the same code serves the
+     pinned stage and the stack. */
   var status = $('[data-status]');
-  var proj = $('[data-proj]'), projSw = $$('.proj__sw i', proj);
-  var projStatus = $('[data-status-done]', proj);
 
   // Scan the room, find the floor, measure it, pick the chair, place that same chair,
   // then tap Buy and open its shop card.
@@ -280,50 +298,51 @@
     status.textContent = p < .38 ? 'Scanning your space…' : p < .66 ? 'Floor found' : p < .82 ? 'Pick a piece' : 'Looks right?';
   }
 
-  function playApp(p) {
-    // cursor coordinates are in the app panel: New Project, then the new card's arrow
-    var move = ease(ramp(p, .06, .26)), next = ease(ramp(p, .8, .9));
-    setVars(ui, {
-      co: ramp(p, 0, .06) * (1 - ramp(p, .94, 1)),
-      cx: lerp(lerp(560, 74, move), 304, next),
-      cy: lerp(lerp(430, 150, move), 312, next),
-      press: ramp(p, .26, .3) * (1 - ramp(p, .32, .36))
+  // From the phone's rect out to their own places between t0 and t1, a beat apart,
+  // tipping as they go; from `out` they lift away again. Scrolling back reverses it all.
+  // A screen is live (reels.js loops its demo) only while it sits still in place.
+  function playReels(p, L, t0, t1, out) {
+    reels.forEach(function (r, i) {
+      var d = i * .015, m = ease(ramp(p, t0 + d, t1 + d)), o = ease(ramp(p, out + d, out + .03 + d));
+      var a = L.phone, z = L.slots[i];
+      setVars(r, {
+        x: lerp(a.x, z.x, m), y: lerp(a.y, z.y, m) - o * 80,
+        w: lerp(a.w, z.w, m), h: lerp(a.h, z.h, m),
+        r: (1 - m) * (i - 1) * 7 + o * (1 - i) * 4,
+        o: ramp(p, t0 - .02, t0) * (1 - o), co: ramp(m, .75, 1)
+      });
+      var live = m > .97 && o < .03;
+      if (live !== (r.getAttribute('data-live') === '1')) r.setAttribute('data-live', live ? '1' : '');
     });
-    setVars(proj, { in: ease(ramp(p, .32, .46)), glow: ramp(p, .72, .78) * (1 - ramp(p, .9, .98)) });
-    projSw.forEach(function (sw, i) { sw.style.setProperty('--sw', ramp(p, .48 + i * .05, .52 + i * .05).toFixed(3)); });
-    projStatus.textContent = p > .76 ? 'Status: Done' : 'Status: Draft';
   }
 
   function updateGallery() {
     if (!G) {
-      // stacked: one pinned screen; the scan plays, fades, and the desktop takes its place
+      if (!S) return;
+      // stacked: one pinned screen; the scan plays, shrinks into a phone, and the phone breaks into three
       var gr = gallery.getBoundingClientRect(), q = clamp(-gr.top / Math.max(gr.height - vh, 1), 0, 1);
-      playScan(ramp(q, 0, .56));
-      setVars(scan, { so: 1 - ease(ramp(q, .6, .67)) });
-      setVars(stage, { fo: ease(ramp(q, .64, .71)) });
-      thenNote.style.setProperty('--o', (ramp(q, .66, .7) * (1 - ramp(q, .76, .8))).toFixed(3));
-      nowNote.style.setProperty('--o', ramp(q, .9, .95).toFixed(3));
-      playApp(ramp(q, .72, .96));
+      var c = ease(ramp(q, .5, .58)), ph = S.phone;
+      playScan(ramp(q, 0, .48), ramp(q, .5, .54));
+      setVars(scan, {
+        ct: c * ph.y, cx: c * ph.x, cb: c * (vh - ph.y - ph.h), cr: c * 28,
+        so: 1 - ramp(q, .6, .63)
+      });
+      thenNote.style.setProperty('--o', (ramp(q, .5, .54) * (1 - ramp(q, .58, .61))).toFixed(3));
+      playReels(q, S, .6, .72, .95);
       return;
     }
     var p = clamp((window.scrollY - galTop) / (galH - vh), 0, 1);
-    // the camera view shrinks into a phone, then the phone widens into the desktop
-    var k = ease(ramp(p, .62, .7)), m = ease(ramp(p, .74, .86));
-    var fw = lerp(G.fw0, G.fw1, m), fh = lerp(G.fh0, G.fh1, m);
-    stage.style.setProperty('--fw', fw.toFixed(1));
-    stage.style.setProperty('--fh', fh.toFixed(1));
-    setVars(stage, { fo: ramp(p, .64, .7), head: ramp(p, .68, .74) });
-    ui.style.setProperty('--ui-s', (fw / 1000).toFixed(4));
-    ui.style.setProperty('--ui-o', ramp(p, .8, .88).toFixed(3));
+    // the camera view shrinks into a phone, then the phone breaks into three screens
+    var k = ease(ramp(p, .62, .7)), ph = G.phone;
+    setVars(stage, { fo: ramp(p, .64, .7), head: ramp(p, .68, .74), sp: ramp(p, .72, .76) });
     playScan(ramp(p, .02, .55), ramp(p, .6, .64));
     setVars(scan, {
-      ct: k * (G.cy - fh / 2), cx: k * (vw - fw) / 2, cb: k * (vh - G.cy - fh / 2), cr: k * 24,
-      so: 1 - ramp(p, .76, .84)
+      ct: k * ph.y, cx: k * ph.x, cb: k * (vh - ph.y - ph.h), cr: k * 24,
+      so: 1 - ramp(p, .72, .75)
     });
-    thenNote.style.setProperty('--o', (ramp(p, .7, .74) * (1 - ramp(p, .75, .79))).toFixed(3));
-    nowNote.style.setProperty('--o', ramp(p, .92, .97).toFixed(3));
-    stage.classList.toggle('is-now', p > .78);
-    playApp(ramp(p, .87, .98));
+    thenNote.style.setProperty('--o', (ramp(p, .7, .73) * (1 - ramp(p, .73, .76))).toFixed(3));
+    stage.classList.toggle('is-now', p > .74);
+    playReels(p, G, .72, .82, .955);
   }
 
   var duo = $('.duo');
@@ -507,13 +526,12 @@
   function onModeChange() {
     setMode();
     if (!moving()) {
-      [comp, stage1, aroundHead, ui, proj, duo, stage, scan, thenNote, nowNote].concat(planLines, rows).forEach(function (el) { el.removeAttribute('style'); });
+      [comp, stage1, aroundHead, duo, stage, scan, thenNote].concat(reels, planLines, rows).forEach(function (el) { el.removeAttribute('style'); });
+      reels.forEach(function (r) { r.removeAttribute('data-live'); });
       // these carry their own layout inline, so only clear what the animation set
       flyers.forEach(function (el) { el.style.transform = ''; el.style.opacity = ''; });
-      projSw.forEach(function (el) { el.style.removeProperty('--sw'); });
       stage.classList.remove('is-now');
       status.textContent = 'Looks right?';
-      projStatus.textContent = 'Status: Done';
     }
     measure();
   }
