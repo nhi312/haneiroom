@@ -348,10 +348,11 @@
 
   var form = $('[data-demo-form]');
   if (form) {
-    var input = $('input', form), msg = $('.demo__msg', form);
+    var input = $('input[type=email]', form), msg = $('.demo__msg', form), btn = $('button', form);
     var action = cfg.demoForm && cfg.demoForm.action;
     form.addEventListener('submit', function (ev) {
       ev.preventDefault();
+      if (btn.disabled) return;
       var ok = input.checkValidity() && input.value.trim() !== '';
       input.setAttribute('aria-invalid', ok ? 'false' : 'true');
       msg.classList.toggle('is-error', !ok);
@@ -362,16 +363,25 @@
         return;
       }
       msg.textContent = 'Sending…';
+      btn.disabled = true;
       fetch(action, { method: 'POST', headers: { Accept: 'application/json' }, body: new FormData(form) })
         .then(function (res) {
-          if (!res.ok) throw new Error(res.status);
+          if (res.ok) return;
+          // Formspree explains a rejected submission (a bad address, a full quota) in its JSON
+          return res.json().catch(function () { return {}; }).then(function (data) {
+            var why = data.errors && data.errors.length && data.errors.map(function (e) { return e.message; }).join(' ');
+            throw { why: why };
+          });
+        })
+        .then(function () {
           form.reset();
           msg.textContent = 'Got it. We\'ll be in touch about your demo.';
         })
-        .catch(function () {
+        .catch(function (err) {
           msg.classList.add('is-error');
-          msg.textContent = 'That didn\'t go through. Please try again in a moment.';
-        });
+          msg.textContent = (err && err.why) || 'That didn\'t go through. Please try again in a moment.';
+        })
+        .then(function () { btn.disabled = false; });
     });
   }
 

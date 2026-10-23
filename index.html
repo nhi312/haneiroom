@@ -482,6 +482,9 @@
     <form class="demo__form" data-demo-form novalidate>
       <label class="sr-only" for="demo-email">Your work email</label>
       <input id="demo-email" name="email" type="email" autocomplete="email" placeholder="you@studio.com" required>
+      <!-- subject line of the notification email; the hidden field is a spam trap only bots fill in -->
+      <input type="hidden" name="_subject" value="New HaneiRoom demo request">
+      <input class="sr-only" type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true">
       <button class="btn btn--warm btn--lg" type="submit">Book a demo</button>
       <p class="demo__msg" role="status" aria-live="polite"></p>
     </form>
