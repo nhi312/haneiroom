@@ -376,6 +376,7 @@
         .then(function () {
           form.reset();
           msg.textContent = 'Got it. We\'ll be in touch about your demo.';
+          celebrate();
         })
         .catch(function (err) {
           msg.classList.add('is-error');
@@ -383,6 +384,60 @@
         })
         .then(function () { btn.disabled = false; });
     });
+  }
+
+  // The pitch above the form gives way to the flower in its hard hat, and paper
+  // confetti bursts from the button.
+  function celebrate() {
+    var box = form.closest('.demo__box');
+    box.classList.add('is-sent');
+    $('.demo__ask', box).setAttribute('aria-hidden', 'true');
+    $('.demo__done', box).setAttribute('aria-hidden', 'false');
+    if (moving()) confetti(form.closest('.demo'), btn);
+  }
+
+  function confetti(host, from) {
+    var cv = document.createElement('canvas'), ctx = cv.getContext('2d');
+    var W = host.clientWidth, H = host.clientHeight, dpr = Math.min(window.devicePixelRatio || 1, 2);
+    cv.className = 'confetti';
+    cv.width = W * dpr; cv.height = H * dpr;
+    ctx.scale(dpr, dpr);
+    host.appendChild(cv);
+    var hb = host.getBoundingClientRect(), fb = from.getBoundingClientRect();
+    var ox = fb.left + fb.width / 2 - hb.left, oy = fb.top + fb.height / 2 - hb.top;
+    var colors = ['#ff912c', '#ff7a3c', '#253a82', '#93a4de', '#fcc490', '#7fb07a', '#a85a22', '#fffdf8'];
+    var bits = [];
+    for (var i = 0; i < 150; i++) {
+      var a = -Math.PI / 2 + (Math.random() - .5) * 2.2, v = 7 + Math.random() * 11;
+      bits.push({
+        x: ox + (Math.random() - .5) * fb.width * .6, y: oy,
+        vx: Math.cos(a) * v, vy: Math.sin(a) * v - 2,
+        r: Math.random() * Math.PI * 2, vr: (Math.random() - .5) * .35,
+        w: 6 + Math.random() * 7, h: 4 + Math.random() * 6, flip: Math.random() * Math.PI,
+        c: colors[i % colors.length], kind: i % 5 // paper strips mostly, some dots and squiggles
+      });
+    }
+    var t0 = performance.now();
+    function frame(now) {
+      var t = now - t0;
+      ctx.clearRect(0, 0, W, H);
+      bits.forEach(function (b) {
+        b.vx *= .985; b.vy = b.vy * .985 + .32;
+        b.x += b.vx; b.y += b.vy; b.r += b.vr; b.flip += .12;
+        ctx.save();
+        ctx.translate(b.x, b.y); ctx.rotate(b.r);
+        ctx.globalAlpha = Math.max(0, Math.min(1, (4200 - t) / 800));
+        ctx.fillStyle = ctx.strokeStyle = b.c;
+        if (b.kind === 3) { ctx.beginPath(); ctx.arc(0, 0, b.h / 2 + 1, 0, Math.PI * 2); ctx.fill(); }
+        else if (b.kind === 4) {
+          ctx.lineWidth = 2.5; ctx.lineCap = 'round'; ctx.beginPath();
+          ctx.moveTo(-b.w, 0); ctx.quadraticCurveTo(-b.w / 2, -5, 0, 0); ctx.quadraticCurveTo(b.w / 2, 5, b.w, 0); ctx.stroke();
+        } else { ctx.scale(1, Math.cos(b.flip)); ctx.fillRect(-b.w / 2, -b.h / 2, b.w, b.h); }
+        ctx.restore();
+      });
+      if (t < 4200) window.requestAnimationFrame(frame); else cv.remove();
+    }
+    window.requestAnimationFrame(frame);
   }
 
   /* ---------------------------------------------------------- torn paper */

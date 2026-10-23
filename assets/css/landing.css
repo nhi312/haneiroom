@@ -739,6 +739,41 @@ html:not(.pin) .tag-note--now { order: 3; margin-top: -12px; }
 .demo__msg { flex-basis: 100%; min-height: 20px; font: 600 14px/20px var(--font-body); color: var(--navy-700); }
 .demo__msg.is-error { color: var(--red-700); }
 
+/* once sent, the pitch above the form makes way for the thank-you; both share
+   one grid cell so the box keeps its height */
+.demo__top { display: grid; grid-template-columns: minmax(0, 1fr); }
+.demo__ask, .demo__done { grid-area: 1 / 1; transition: opacity .4s ease, translate .5s cubic-bezier(.3, 1.4, .5, 1); }
+.demo__done { align-self: center; padding: 0 var(--space-6) var(--space-8); opacity: 0; translate: 0 16px; pointer-events: none; }
+.is-sent .demo__ask { opacity: 0; translate: 0 -16px; pointer-events: none; }
+.is-sent .demo__done { opacity: 1; translate: 0 0; pointer-events: auto; transition-delay: .15s; }
+.demo__done .demo__title { margin-top: var(--space-2); }
+
+/* the Hanei flower on site: hard hat, ruler, a roll of plans */
+.hc { display: block; width: clamp(150px, 22vw, 200px); margin: 0 auto 4px; overflow: visible; }
+.hc__line { fill: #253a82; stroke: #253a82; stroke-width: 7; stroke-linejoin: round; }
+.hc__fill { fill: #ff7a3c; }
+.hc__ink { stroke: #253a82; stroke-width: 2.5; stroke-linejoin: round; }
+.hc__shadow { fill: #253a82; opacity: .12; }
+.hc__fig, .hc__body, .hc__hat, .hc__ruler, .hc__roll, .hc__eyes, .hc__pupils, .hc__shadow { transform-box: fill-box; }
+.motion .is-sent .hc__fig { filter: url(#hc-boil); animation: hc-pop .8s cubic-bezier(.3, 1.6, .5, 1) .1s both; transform-origin: 50% 100%; }
+.motion .is-sent .hc__body { animation: hc-bob 1.6s ease-in-out .9s infinite; transform-origin: 50% 90%; }
+.motion .is-sent .hc__hat { animation: hc-tip 1.6s ease-in-out .9s infinite; transform-origin: 50% 100%; }
+.motion .is-sent .hc__ruler { animation: hc-swing 1.6s ease-in-out 1s infinite; transform-origin: 50% 100%; }
+.motion .is-sent .hc__roll { animation: hc-hop 1.6s ease-in-out 1.1s infinite; transform-origin: 50% 50%; }
+.motion .is-sent .hc__eyes { animation: hc-blink 4s steps(1) 1.4s infinite; transform-origin: 50% 50%; }
+.motion .is-sent .hc__pupils { animation: hc-look 5s ease-in-out 1.2s infinite; }
+.motion .is-sent .hc__shadow { animation: hc-shadow 1.6s ease-in-out .9s infinite; transform-origin: 50% 50%; }
+@keyframes hc-pop { from { scale: .4; rotate: -12deg; opacity: 0; } 60% { opacity: 1; } }
+@keyframes hc-bob { 0%, 100% { translate: 0 0; rotate: -3deg; } 50% { translate: 0 -7px; rotate: 3deg; } }
+@keyframes hc-tip { 0%, 100% { rotate: 0deg; } 50% { rotate: -6deg; } }
+@keyframes hc-swing { 0%, 100% { rotate: -5deg; } 50% { rotate: 7deg; } }
+@keyframes hc-hop { 0%, 100% { translate: 0 0; rotate: 0deg; } 50% { translate: -2px -5px; rotate: -4deg; } }
+@keyframes hc-blink { 0%, 90%, 96% { scale: 1 1; } 92% { scale: 1 .12; } }
+@keyframes hc-look { 0%, 100% { translate: 0 0; } 30% { translate: -6px 3px; } 55% { translate: -6px 3px; } 75% { translate: 2px -2px; } }
+@keyframes hc-shadow { 0%, 100% { scale: 1; opacity: .12; } 50% { scale: .86; opacity: .08; } }
+
+.confetti { position: absolute; inset: 0; z-index: 2; width: 100%; height: 100%; pointer-events: none; }
+
 /* ------------------------------------------------------------ footer */
 .foot { position: relative; z-index: 3; background: var(--cream-50); border-top: 2px solid var(--navy-700); }
 .foot__banner { padding: 26px 24px; background: var(--lavender-200); text-align: center; font: 800 14px/20px var(--font-body); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-900); }

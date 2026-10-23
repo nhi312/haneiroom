@@ -452,31 +452,89 @@
   </div>
 
   <div class="demo__box">
-    <p class="demo__eyebrow">Book a demo</p>
-    <h2 class="demo__title" id="demo-title">Show us the room you're stuck on.</h2>
-    <p class="demo__lede">Leave your email and we'll get in touch to set up a demo with one of your own projects.</p>
+    <!-- the top half swaps once the form is sent: the pitch out, the thank-you in -->
+    <div class="demo__top">
+      <div class="demo__ask">
+        <p class="demo__eyebrow">Book a demo</p>
+        <h2 class="demo__title" id="demo-title">Show us the room you're stuck on.</h2>
+        <p class="demo__lede">Leave your email and we'll get in touch to set up a demo with one of your own projects.</p>
 
-    <div class="demo__rows" aria-hidden="true">
-      <ul class="demo__row" data-row="-1">
-        <li><img src="design-system/icons/home.svg" alt="">Floor plans</li>
-        <li><img src="design-system/icons/palette.svg" alt="">5 style words</li>
-        <li><i style="background:linear-gradient(90deg,#f4efe6 25%,#d9c3a5 25% 50%,#a67c52 50% 75%,#7fb07a 75%)"></i>Color palette</li>
-        <li><img src="design-system/icons/budget.svg" alt="">Budget split</li>
-        <li><img src="design-system/icons/image-upload.svg" alt="">Inspiration photos</li>
-        <li><img src="design-system/icons/sparkle.svg" alt="">One-sentence brief</li>
-        <li><img src="design-system/icons/home.svg" alt="">Floor plans</li>
-        <li><img src="design-system/icons/palette.svg" alt="">5 style words</li>
-      </ul>
-      <ul class="demo__row" data-row="1">
-        <li><img src="design-system/icons/alert.svg" alt="">Potential conflict</li>
-        <li><img class="thumb" src="assets/img/products/accent-chair-white-velvet.jpg" alt="">Velvet accent chair</li>
-        <li><img src="design-system/icons/bookmark.svg" alt="">Save it</li>
-        <li><img class="thumb" src="assets/img/products/floor-lamp-with-table.jpg" alt="">Floor lamp with table</li>
-        <li><img src="design-system/icons/export.svg" alt="">Export CSV</li>
-        <li><img class="thumb" src="assets/img/products/side-table-basket-white.jpg" alt="">Side table, basket</li>
-        <li><img src="design-system/icons/alert.svg" alt="">Potential conflict</li>
-        <li><img src="design-system/icons/bookmark.svg" alt="">Save it</li>
-      </ul>
+        <div class="demo__rows" aria-hidden="true">
+          <ul class="demo__row" data-row="-1">
+            <li><img src="design-system/icons/home.svg" alt="">Floor plans</li>
+            <li><img src="design-system/icons/palette.svg" alt="">5 style words</li>
+            <li><i style="background:linear-gradient(90deg,#f4efe6 25%,#d9c3a5 25% 50%,#a67c52 50% 75%,#7fb07a 75%)"></i>Color palette</li>
+            <li><img src="design-system/icons/budget.svg" alt="">Budget split</li>
+            <li><img src="design-system/icons/image-upload.svg" alt="">Inspiration photos</li>
+            <li><img src="design-system/icons/sparkle.svg" alt="">One-sentence brief</li>
+            <li><img src="design-system/icons/home.svg" alt="">Floor plans</li>
+            <li><img src="design-system/icons/palette.svg" alt="">5 style words</li>
+          </ul>
+          <ul class="demo__row" data-row="1">
+            <li><img src="design-system/icons/alert.svg" alt="">Potential conflict</li>
+            <li><img class="thumb" src="assets/img/products/accent-chair-white-velvet.jpg" alt="">Velvet accent chair</li>
+            <li><img src="design-system/icons/bookmark.svg" alt="">Save it</li>
+            <li><img class="thumb" src="assets/img/products/floor-lamp-with-table.jpg" alt="">Floor lamp with table</li>
+            <li><img src="design-system/icons/export.svg" alt="">Export CSV</li>
+            <li><img class="thumb" src="assets/img/products/side-table-basket-white.jpg" alt="">Side table, basket</li>
+            <li><img src="design-system/icons/alert.svg" alt="">Potential conflict</li>
+            <li><img src="design-system/icons/bookmark.svg" alt="">Save it</li>
+          </ul>
+        </div>
+      </div>
+      <div class="demo__done" aria-hidden="true">
+        <svg class="hc" viewBox="0 0 260 270" aria-hidden="true" focusable="false">
+          <defs>
+            <!-- line boil: the noise reseeds a few times a second so every edge wobbles like a hand-drawn frame -->
+            <filter id="hc-boil" x="-10%" y="-10%" width="120%" height="120%">
+              <feTurbulence type="fractalNoise" baseFrequency=".04" numOctaves="2" seed="1" result="n"><animate attributeName="seed" values="1;5;9;3" dur=".48s" calcMode="discrete" repeatCount="indefinite"/></feTurbulence>
+              <feDisplacementMap in="SourceGraphic" in2="n" scale="4" xChannelSelector="R" yChannelSelector="G"/>
+            </filter>
+            <g id="hc-petals"><ellipse cx="0" cy="-52" rx="24" ry="62" transform="rotate(-8)"/><ellipse cx="0" cy="-48" rx="26" ry="58" transform="rotate(38)"/><ellipse cx="0" cy="-44" rx="27" ry="54" transform="rotate(82)"/><ellipse cx="0" cy="-48" rx="25" ry="58" transform="rotate(128)"/><ellipse cx="0" cy="-50" rx="24" ry="60" transform="rotate(172)"/><ellipse cx="0" cy="-46" rx="26" ry="56" transform="rotate(215)"/><ellipse cx="0" cy="-48" rx="27" ry="58" transform="rotate(262)"/><ellipse cx="0" cy="-52" rx="25" ry="62" transform="rotate(305)"/><circle r="34"/></g>
+          </defs>
+          <ellipse class="hc__shadow" cx="130" cy="260" rx="78" ry="9"/>
+          <g class="hc__fig">
+            <g class="hc__roll" transform="translate(48 214) rotate(-16)">
+              <path class="hc__ink" d="M40 -13C53 -14 60 -4 52 7L40 7Z" fill="#fffdf8"/>
+              <rect class="hc__ink" x="-40" y="-13" width="80" height="26" rx="2" fill="#fffdf8"/>
+              <path d="M-28 -5H22M-28 3H10" stroke="#93a4de" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+              <rect x="4" y="-13" width="9" height="26" fill="#a85a22"/>
+              <ellipse class="hc__ink" cx="-40" cy="0" rx="7" ry="13" fill="#fffdf8"/>
+              <path d="M-40 -5C-36 -5 -36 4 -40 4C-43 4 -43 -2 -40 -2" stroke="#253a82" stroke-width="2" fill="none" stroke-linecap="round"/>
+            </g>
+            <g class="hc__body">
+              <g transform="translate(130 140)">
+                <use href="#hc-petals" class="hc__line"/>
+                <use href="#hc-petals" class="hc__fill"/>
+                <ellipse cx="-31" cy="16" rx="8" ry="4.5" fill="#e9603a" opacity=".35"/>
+                <ellipse cx="33" cy="7" rx="8" ry="4.5" fill="#e9603a" opacity=".35"/>
+                <g class="hc__eyes">
+                  <circle class="hc__ink" cx="-19" cy="-2" r="13" fill="#fff"/>
+                  <circle class="hc__ink" cx="20" cy="-12" r="13" fill="#fff"/>
+                  <g class="hc__pupils">
+                    <circle cx="-14" cy="-7" r="7" fill="#1e1e1e"/><circle cx="25" cy="-17" r="7" fill="#1e1e1e"/>
+                    <circle cx="-12" cy="-9" r="2" fill="#fff"/><circle cx="27" cy="-19" r="2" fill="#fff"/>
+                  </g>
+                </g>
+                <path d="M-6 12Q0 19 6 12" stroke="#1e1e1e" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+                <g class="hc__hat" transform="rotate(-10) translate(0 -62)">
+                  <path class="hc__ink" d="M-40 0C-40 -28 -22 -44 0 -44C22 -44 40 -28 40 0Z" fill="#253a82"/>
+                  <path d="M-7 -43C-8 -30 -8 -14 -7 0H7C8 -14 8 -30 7 -43Z" fill="#93a4de"/>
+                  <path d="M-29 -10C-27 -23 -18 -33 -9 -37" stroke="#fff" stroke-opacity=".55" stroke-width="3" fill="none" stroke-linecap="round"/>
+                  <path class="hc__ink" d="M-56 4Q0 -10 56 4L57 11Q0 -2 -57 11Z" fill="#253a82"/>
+                </g>
+              </g>
+            </g>
+            <g class="hc__ruler" transform="translate(212 182) rotate(24)">
+              <rect class="hc__ink" x="-11" y="-64" width="22" height="128" rx="3" fill="#d5d8f2"/>
+              <path d="M-10 -52h9M-10 -43h5M-10 -34h9M-10 -25h5M-10 -16h9M-10 -7h5M-10 2h9M-10 11h5M-10 20h9M-10 29h5M-10 38h9M-10 47h5" stroke="#253a82" stroke-width="2" stroke-linecap="round"/>
+            </g>
+          </g>
+        </svg>
+        <p class="demo__eyebrow">Request sent</p>
+        <p class="demo__title">We will soon get in touch!</p>
+        <p class="demo__lede">Thanks! We'll email you to set up a demo with one of your own projects. Until then, keep sketching.</p>
+      </div>
     </div>
 
     <form class="demo__form" data-demo-form novalidate>
