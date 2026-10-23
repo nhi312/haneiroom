@@ -1,0 +1,28 @@
+/* Terms of Service and Privacy Policy: one quiet reading column on the
+   landing page's cream paper. Builds on design-system/tokens.css. */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--cream-50); color: var(--text-primary); font: 400 16px/26px var(--font-body); }
+a { color: var(--navy-700); text-underline-offset: 3px; }
+a:hover { color: var(--rust-600); }
+:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+
+.lg-nav { display: flex; align-items: center; justify-content: space-between; gap: 16px; max-width: 760px; margin: 0 auto; padding: 20px 24px; }
+.lg-nav img { display: block; width: auto; height: 46px; }
+.lg-nav a.lg-back { font: 600 14px/20px var(--font-body); text-decoration: none; }
+
+.lg { max-width: 760px; margin: 0 auto; padding: 24px 24px 96px; }
+.lg__k { font: 700 12px/16px var(--font-body); letter-spacing: .14em; text-transform: uppercase; color: var(--rust-600); }
+.lg h1 { margin: 10px 0 8px; font: 400 clamp(44px, 7vw, 68px)/1.02 var(--font-heading); color: var(--text-heading); }
+.lg__date { margin: 0 0 32px; font: 500 14px/20px var(--font-body); color: var(--grey-600); }
+.lg__sum { margin: 0 0 40px; padding: 20px 24px; border-radius: var(--radius-md); background: var(--white); box-shadow: var(--shadow-sm); }
+.lg__sum p { margin: 0 0 8px; font-weight: 600; color: var(--navy-700); }
+.lg__sum ul { margin: 0; padding-left: 20px; }
+.lg h2 { margin: 40px 0 10px; font: 700 20px/28px var(--font-body); color: var(--navy-700); }
+.lg h3 { margin: 22px 0 6px; font: 700 16px/24px var(--font-body); color: var(--ink-900); }
+.lg p { margin: 0 0 14px; }
+.lg ul { margin: 0 0 14px; padding-left: 22px; }
+.lg li { margin-bottom: 6px; }
+
+.lg-foot { padding: 16px 24px; background: var(--navy-700); text-align: center; font: 600 12px/18px var(--font-body); letter-spacing: .06em; color: var(--lavender-100); }
+.lg-foot a { color: inherit; }

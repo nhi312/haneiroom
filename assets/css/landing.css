@@ -808,6 +808,7 @@ html:not(.pin):not(.motion) .frame { display: none; }
 .demo__form input[aria-invalid="true"] { border-color: var(--red-700); }
 .demo__msg { flex-basis: 100%; min-height: 20px; font: 600 14px/20px var(--font-body); color: var(--navy-700); }
 .demo__msg.is-error { color: var(--red-700); }
+.demo__legal { flex-basis: 100%; font: 400 12px/18px var(--font-body); color: var(--grey-600); }
 
 /* once sent, the pitch above the form makes way for the thank-you; both share
    one grid cell so the box keeps its height */
@@ -859,6 +860,8 @@ html:not(.pin):not(.motion) .frame { display: none; }
 .foot__mid p { font: 500 14px/20px var(--font-body); color: var(--grey-600); }
 .foot__sticker { position: absolute; left: -12px; bottom: -26px; width: 104px; rotate: -12deg; }
 .foot__bar { padding: 14px 24px; background: var(--navy-700); text-align: center; font: 600 12px/16px var(--font-body); letter-spacing: .08em; color: var(--lavender-100); }
+.foot__bar a { color: inherit; text-underline-offset: 3px; }
+.foot__bar a:hover { color: var(--white); }
 
 /* ------------------------------------------------------------ glass, iPhone style
    Hanei's buttons, pills and product frames are liquid glass: a light top-to-bottom

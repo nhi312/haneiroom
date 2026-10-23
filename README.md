@@ -18,6 +18,7 @@ Then open http://localhost:4173. (`.claude/launch.json` has the same command as 
 - `assets/js/reels.js`: the three HaneiAI screens in scene 03. Each screen's markup is its finished frame; this loops a cursor demo on it while landing.js marks it live.
 - `assets/js/config.js`: **the page's outside hooks.** `demoForm.action` is where the "Book a demo" form posts the email. `cta` sets the link of any element marked `data-cta`; none use it right now, since the nav button goes straight to the demo form.
 - `assets/img/`: furniture product photos, the v1 product screen, and `quilt.svg` for the footer band.
+- `terms.html`, `privacy.html` and `assets/css/legal.css`: the Terms of Service and Privacy Policy, linked from the footer bar and under the demo form. Contact for both is info.haneiroom@gmail.com.
 - `tools/build-art.py`: draws every illustration (the tools, the plan, the furniture, the frame, the AR room, the demo backdrop, the quilt band) and writes them into `index.html` between `<!-- art:NAME -->` markers. Edit shapes there, then run `python3 tools/build-art.py`.
 
 ## How the motion works
