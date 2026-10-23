@@ -709,6 +709,16 @@ html:not(.pin) .tag-note--now { order: 3; margin-top: -12px; }
 .bub ul { list-style: none; margin: 10px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 4px 18px; }
 .bub li { position: relative; padding-left: 14px; font: 600 16px/22px var(--font-body); }
 .bub li::before { content: ""; position: absolute; left: 0; top: 8px; width: 6px; height: 6px; border-radius: 50%; background: currentColor; opacity: .55; }
+/* App Store badge, drawn like Apple's: black, white logo, two lines */
+.appstore {
+  display: inline-flex; align-items: center; gap: 8px; margin-top: 14px; padding: 7px 16px 7px 12px; border-radius: 11px;
+  background: #000; border: 1px solid #a6a6a6; color: #fff; text-decoration: none; transition: translate .2s, box-shadow .2s;
+}
+.appstore:hover { translate: 0 -2px; box-shadow: 0 8px 18px rgba(30, 30, 60, .25); }
+.appstore:focus-visible { outline: 2px solid var(--navy-700); outline-offset: 3px; }
+.appstore svg { width: 26px; height: 26px; fill: currentColor; flex: none; }
+.appstore span { display: grid; font: 600 20px/1.05 -apple-system, "SF Pro Display", "Helvetica Neue", Inter, sans-serif; letter-spacing: -.01em; }
+.appstore small { font-size: 10.5px; font-weight: 500; letter-spacing: .01em; }
 .duo__both {
   position: relative; justify-self: center; max-width: 480px; margin-top: 6px; padding: 10px 20px; border-radius: var(--radius-pill); text-align: center;
   background: var(--white); border: 1.5px dashed var(--navy-300); color: var(--navy-700); font: 500 15px/21px var(--font-body); opacity: calc(var(--v) * 2 - 1);
@@ -943,5 +953,8 @@ html:not(.pin) .tag-note--now { order: 3; margin-top: -12px; }
   .bub ul { flex-direction: column; gap: 2px; margin-top: 8px; }
   .bub li { font-size: 14px; line-height: 19px; }
   .bub li::before { top: 7px; }
+  .appstore { margin-top: 12px; padding: 6px 14px 6px 10px; }
+  .appstore svg { width: 22px; height: 22px; }
+  .appstore span { font-size: 17px; }
   .duo__both { font-size: 14px; line-height: 20px; padding: 10px 16px; border-radius: 22px; }
 }
