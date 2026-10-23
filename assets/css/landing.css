@@ -653,7 +653,7 @@ a { color: inherit; }
 .pin .tag-note { position: absolute; opacity: var(--o, 1); }
 .pin .collage { display: block; }
 .pin .collage--palette { display: grid; }
-.pin .collage--palette { translate: calc(var(--fw, 300) * -.5px - 130px) calc(var(--fh, 560) * -.5px - 110px); rotate: -8deg; }
+.pin .collage--palette { translate: calc(var(--fw, 300) * -.5px - 130px) calc(var(--fh, 560) * -.5px - 86px); rotate: -8deg; }
 .pin .collage--card { width: 150px; translate: calc(var(--fw, 300) * .5px - 50px) calc(var(--fh, 560) * .5px - 210px); rotate: 7deg; }
 .pin .collage--sheet { width: 230px; translate: calc(var(--fw, 300) * .5px - 40px) calc(var(--fh, 560) * -.5px - 70px); rotate: 8deg; }
 
@@ -726,7 +726,7 @@ html:not(.pin) .tag-note--now { order: 3; margin-top: -12px; }
 .duo__both b { margin-right: 6px; font-weight: 800; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; }
 /* the two flowers keep sketching: a wobbling line, a bob, eyes on their screens */
 .bub__body, .bub__device { transform-box: fill-box; }
-.motion .bub__fig { filter: url(#hc-boil); }
+.motion .bub__body, .motion .bub__device { filter: url(#hc-boil); }
 .motion .bub__body { animation: hc-bob 1.8s ease-in-out infinite; transform-origin: 50% 90%; }
 .motion .bub--web .bub__body { animation-delay: -.9s; }
 .motion .bub--room .bub__device { animation: hc-swing 2.4s ease-in-out infinite; transform-origin: 50% 100%; }

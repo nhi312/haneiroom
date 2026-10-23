@@ -241,8 +241,10 @@
     thenNote.style.top = (cy + 20).toFixed(0) + 'px';
     var nowW = clamp(side + 20, 170, 250);
     nowNote.style.width = nowW + 'px';
-    nowNote.style.left = (vw / 2 + fw1 / 2 + b - 44).toFixed(0) + 'px';
-    nowNote.style.top = (cy - fh1 / 2 + 36).toFixed(0) + 'px';
+    // the sheet and the chair card hold the right of the desktop, so its note
+    // tucks over the lower-left corner, where the phone's note sat before
+    nowNote.style.left = Math.max(16, vw / 2 - fw1 / 2 - b + 44 - nowW).toFixed(0) + 'px';
+    nowNote.style.top = (cy + fh1 / 2 - 60).toFixed(0) + 'px';
     galTop = docTop(gallery);
     galH = gallery.offsetHeight;
   }
