@@ -674,8 +674,14 @@ a { color: inherit; }
 .pin .gallery__bg { display: block; position: absolute; inset: -40px; filter: blur(calc(var(--bgb, 16) * 1px)) saturate(1.1); }
 .pin .gallery__bg::after { content: ""; position: absolute; inset: 0; background: rgba(250, 244, 234, var(--veil, .4)); }
 .gallery__bg img { width: 100%; height: 100%; object-fit: cover; }
-.pin .scan { position: absolute; inset: 0; opacity: var(--so, 1); clip-path: inset(calc(var(--ct, 0) * 1px) calc(var(--cx, 0) * 1px) calc(var(--cb, 0) * 1px) round calc(var(--cr, 0) * 1px)); }
-.pin .scan__view { position: absolute; inset: 0; }
+.pin .scan { position: absolute; inset: 0; opacity: var(--so, 1); }
+/* the camera view's own box shrinks into the phone's screen (landing.js sets
+   --scx/--scy/--scw/--sch, a scale and a corner), so the app's controls and shop
+   card reflow into a phone layout instead of being cropped */
+.pin .scan__view, .motion:not(.pin) .scan__view {
+  position: absolute; left: 0; top: 0; width: var(--scw, 100%); height: var(--sch, 100%);
+  transform-origin: 0 0; translate: var(--scx, 0) var(--scy, 0); scale: var(--scs, 1); border-radius: var(--scr, 0);
+}
 .pin .frame { width: calc(var(--fw, 300) * 1px + var(--b) * 2); height: calc(var(--fh, 560) * 1px + var(--b) * 2); translate: -50% -50%; }
 .pin .pitch { position: absolute; top: var(--cy, 50%); opacity: var(--o, 1); translate: calc((1 - var(--o, 1)) * -40px) -50%; }
 .pin .collage { display: block; }
@@ -709,9 +715,7 @@ html:not(.pin):not(.motion) .frame { display: none; }
    phone breaks into three small screens on the same screen */
 .motion:not(.pin) .gallery { height: 760vh; height: 760svh; }
 .motion:not(.pin) .gallery__stage { position: sticky; top: 0; display: block; height: 100vh; height: 100svh; padding: 0; overflow: hidden; }
-.motion:not(.pin) .scan { position: absolute; inset: 0; height: auto; margin: 0; opacity: var(--so, 1); clip-path: inset(calc(var(--ct, 0) * 1px) calc(var(--cx, 0) * 1px) calc(var(--cb, 0) * 1px) round calc(var(--cr, 0) * 1px)); }
-/* as it shrinks into the phone below the pitch, the camera view follows it down so the chair stays in frame */
-.motion:not(.pin) .scan__view { position: absolute; inset: 0; height: auto; translate: 0 calc(var(--vy, 0) * 1px); scale: var(--vs, 1); }
+.motion:not(.pin) .scan { position: absolute; inset: 0; height: auto; margin: 0; opacity: var(--so, 1); }
 .motion:not(.pin) .pitch { position: absolute; left: 50%; top: 84px; width: min(360px, calc(100% - 32px)); margin: 0; padding: 18px 20px 20px; opacity: var(--o, 1); translate: -50% calc((1 - var(--o, 1)) * -24px); }
 .motion:not(.pin) .pitch__t { font-size: 28px; }
 /* the phone frame follows the screen the camera view shrank into */

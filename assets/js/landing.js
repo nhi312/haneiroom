@@ -202,12 +202,13 @@
   /* ---------------------------------------------------------- 03 what changed */
   var aroundHead = $('[data-around]');
   var gallery = $('.gallery'), stage = $('.gallery__stage');
-  var scan = $('.scan'), pitch = $('.pitch'), reels = $$('.reel');
+  var scan = $('.scan'), scanView = $('.scan__view'), pitch = $('.pitch'), reels = $$('.reel');
   var G = null, S = null, galTop = 0, galH = 0, panAmp = 3;
   var FB = 12; // the phone's bezel, as .frame's --b
+  var full = null, screen = null; // the camera view at full size, and the phone screen it shrinks into
 
   function layoutGallery() {
-    [stage, scan, pitch].concat(reels).forEach(function (el) { el.removeAttribute('style'); });
+    [stage, scan, scanView, pitch].concat(reels).forEach(function (el) { el.removeAttribute('style'); });
     G = S = null;
     // The room photo covers the screen. A wide screen sees nearly all of it, so the
     // camera only drifts; a phone sees a third, so it sweeps from the door to the window.
@@ -215,6 +216,12 @@
     panAmp = Math.max(3, (W - vw) / 2 / W * 80);
     // the plane and its arrows span half the photo; keep them clear of the tool rail
     scan.style.setProperty('--fit', Math.min(1, vw * .84 / (W * .495)).toFixed(3));
+    // The phone's screen is laid out at its own size (an iPhone's 393 × 852, or this
+    // phone's own screen) and scaled into the bezel, so its controls and shop card sit
+    // where the app puts them. The room photo refits to it like it does to any screen.
+    var sw = vw <= 480 ? vw : 393, sh = vw <= 480 ? vh : 852;
+    full = { w: scan.clientWidth || vw, h: scan.clientHeight || vh, fit: fitFor(vw, vh), k: vw <= 767 ? 2.3 : 1 };
+    screen = { w: sw, h: sh, fit: fitFor(sw, sh), k: 2.3 };
     if (!pinned()) {
       if (moving()) layoutStack();
       return;
@@ -245,6 +252,21 @@
     galH = gallery.offsetHeight;
   }
 
+  function fitFor(w, h) { var W = Math.max(w, h * 1264 / 843); return Math.min(1, w * .84 / (W * .495)); }
+
+  // The camera view's box eases from the full screen into the phone's screen
+  // (rect `ph`, corner radius `rad`), refitting the room and the chair as it goes.
+  function shrinkScan(k, ph, rad) {
+    var sc = lerp(1, ph.w / screen.w, k);
+    scanView.style.setProperty('--scw', lerp(full.w, screen.w, k).toFixed(1) + 'px');
+    scanView.style.setProperty('--sch', lerp(full.h, screen.h, k).toFixed(1) + 'px');
+    scanView.style.setProperty('--scx', (k * ph.x).toFixed(1) + 'px');
+    scanView.style.setProperty('--scy', (k * ph.y).toFixed(1) + 'px');
+    scanView.style.setProperty('--scs', sc.toFixed(4));
+    scanView.style.setProperty('--scr', (k * rad / sc).toFixed(1) + 'px');
+    setVars(scan, { fit: lerp(full.fit, screen.fit, k), 'chair-k': lerp(full.k, screen.k, k) });
+  }
+
   // A HaneiAI screen is a 36px title bar and a 10px rim around a 440 × 400 stage.
   function reelH(w) { return 46 + (w - 20) * 400 / 440; }
   function reelW(h) { return 20 + (h - 46) * 440 / 400; }
@@ -264,8 +286,8 @@
       slots = [0, 1, 2].map(function (i) { return { x: (vw - cw) / 2 + (i === 1 ? nudge : -nudge), y: y0 + i * (rh + gap), w: cw, h: rh }; });
     }
     // the phone sits under the pitch while it holds
-    var py = 84 + pitch.offsetHeight + 20 + FB, ph = Math.max(vh - 16 - FB - py, 160), pw = Math.min(vw * .64, 320, ph / 2.05);
-    ph = Math.min(ph, pw * 2.05);
+    var py = 84 + pitch.offsetHeight + 20 + FB, ph = Math.max(vh - 16 - FB - py, 160), pw = Math.min(vw * .64, 320, ph * screen.w / screen.h);
+    ph = pw * screen.h / screen.w;
     S = { phone: { x: (vw - pw) / 2, y: py, w: pw, h: ph }, slots: slots };
     ['px', 'py', 'pw', 'ph'].forEach(function (k, i) { stage.style.setProperty('--' + k, [S.phone.x, S.phone.y, pw, ph][i].toFixed(1)); });
   }
@@ -277,11 +299,10 @@
 
   // Scan the room, find the floor, measure it, pick the chair, place that same chair,
   // then tap Buy and open its shop card.
-  // `hide` fades the phone's own controls once the view shrinks into a phone.
-  function playScan(p, hide) {
-    var sweep = ramp(p, .04, .4), keep = 1 - (hide || 0);
+  function playScan(p) {
+    var sweep = ramp(p, .04, .4);
     setVars(scan, {
-      ui: ramp(p, 0, .06) * keep,
+      ui: ramp(p, 0, .06),
       pan: Math.sin(sweep * Math.PI * 2) * panAmp,
       zoom: lerp(1.08, 1, ease(ramp(p, .34, .46))),
       floor: ease(ramp(p, .38, .5)),
@@ -293,9 +314,9 @@
       tap: ramp(p, .73, .75) * (1 - ramp(p, .76, .78)),
       chair: easeBack(ramp(p, .79, .85)),
       foot: ramp(p, .82, .87),
-      buy: ramp(p, .85, .88) * keep,
+      buy: ramp(p, .85, .88),
       btap: ramp(p, .89, .91) * (1 - ramp(p, .92, .94)),
-      deal: ease(ramp(p, .92, .97)) * keep
+      deal: ease(ramp(p, .92, .97))
     });
     status.textContent = p < .38 ? 'Scanning your space…' : p < .66 ? 'Floor found' : p < .82 ? 'Pick a piece' : 'Looks right?';
   }
@@ -331,13 +352,10 @@
       // under the pitch, then breaks into three small screens
       var gr = gallery.getBoundingClientRect(), q = clamp(-gr.top / Math.max(gr.height - vh, 1), 0, 1);
       var c = ease(ramp(q, .44, .52)), ph = S.phone;
-      playScan(ramp(q, 0, .42), ramp(q, .44, .48));
+      playScan(ramp(q, 0, .42));
       setVars(stage, { fo: ramp(q, .48, .53), sp: ramp(q, .72, .76) });
-      setVars(scan, {
-        ct: c * ph.y, cx: c * ph.x, cb: c * (vh - ph.y - ph.h), cr: c * 34,
-        vy: c * (ph.y + ph.h / 2 - vh / 2), vs: lerp(1, .7, c),
-        so: 1 - ramp(q, .72, .75)
-      });
+      shrinkScan(c, ph, 34);
+      setVars(scan, { so: 1 - ramp(q, .72, .75) });
       showPitch(ramp(q, .5, .55) * (1 - ramp(q, .69, .72)));
       playReels(q, S, .72, .84, .95);
       return;
@@ -347,11 +365,9 @@
     // then breaks into three screens
     var k = ease(ramp(p, .54, .61)), ph = G.phone;
     setVars(stage, { fo: ramp(p, .57, .62), head: ramp(p, .6, .66), sp: ramp(p, .78, .82) });
-    playScan(ramp(p, .02, .5), ramp(p, .52, .56));
-    setVars(scan, {
-      ct: k * ph.y, cx: k * ph.x, cb: k * (vh - ph.y - ph.h), cr: k * 40,
-      so: 1 - ramp(p, .78, .81)
-    });
+    playScan(ramp(p, .02, .5));
+    shrinkScan(k, ph, 40);
+    setVars(scan, { so: 1 - ramp(p, .78, .81) });
     showPitch(ramp(p, .6, .65) * (1 - ramp(p, .75, .78)));
     stage.classList.toggle('is-now', p > .78);
     playReels(p, G, .78, .87, .955);
@@ -538,7 +554,7 @@
   function onModeChange() {
     setMode();
     if (!moving()) {
-      [comp, stage1, aroundHead, duo, stage, scan, pitch].concat(reels, planLines, rows).forEach(function (el) { el.removeAttribute('style'); });
+      [comp, stage1, aroundHead, duo, stage, scan, scanView, pitch].concat(reels, planLines, rows).forEach(function (el) { el.removeAttribute('style'); });
       reels.forEach(function (r) { r.removeAttribute('data-live'); });
       // these carry their own layout inline, so only clear what the animation set
       flyers.forEach(function (el) { el.style.transform = ''; el.style.opacity = ''; });
