@@ -32,5 +32,5 @@ Then open http://localhost:4173. (`.claude/launch.json` has the same command as 
 ## Still open
 
 - **Demo form:** `config.js` has no `demoForm.action` yet, so the form checks the email and says it isn't connected. Add a form endpoint to send real sign-ups.
-- **Font license:** `design-system/fonts/` holds the free Befonts release of Trovical Calm, licensed for personal use only. Buy a commercial web license before publishing. The free files draw the period as a watermark (left out of the font in `tokens.css`) and fuse "oo" through ligatures and contextual alternates, which `landing.css` turns off on every title.
+- **Font license:** `design-system/fonts/` holds Instrument Serif, the title face, under the SIL Open Font License 1.1 (`fonts/LICENSE-instrument-serif-OFL.txt`). It is free to use on the web.
 - **App screens:** the desktop app and product cards are HTML recreations built from the design system, with sample project names. The AR demo is being rebuilt in a separate session on a photo-real empty room.

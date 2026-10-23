@@ -1,23 +1,18 @@
 /* HaneiRoom design tokens, generated from tokens.json */
-/* Trovical Calm (Befonts). The bundled files are the free "personal use only"
-   release: buy a commercial/web license before shipping. See fonts/LICENSE-trovical-calm.txt
-   The free release draws "." as a Befonts watermark, so U+002E is left out of
-   unicode-range and falls back to the next font. Drop that gap with the licensed files. */
+/* Instrument Serif (SIL Open Font License 1.1, see fonts/LICENSE-instrument-serif-OFL.txt). One weight, roman and italic. */
 @font-face {
-  font-family: "Trovical Calm";
-  src: url("fonts/trovical-calm-regular.otf") format("opentype");
+  font-family: "Instrument Serif";
+  src: url("fonts/instrument-serif-regular.ttf") format("truetype");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
-  unicode-range: U+0000-002D, U+002F-10FFFF;
 }
 @font-face {
-  font-family: "Trovical Calm";
-  src: url("fonts/trovical-calm-italic.otf") format("opentype");
+  font-family: "Instrument Serif";
+  src: url("fonts/instrument-serif-italic.ttf") format("truetype");
   font-weight: 400;
   font-style: italic;
   font-display: swap;
-  unicode-range: U+0000-002D, U+002F-10FFFF;
 }
 :root {
   --navy-700: #253a82;
@@ -80,12 +75,10 @@
   --shadow-lg: 0 24px 48px rgba(30, 30, 60, 0.16);
   --shadow-glass: inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 8px 24px rgba(30, 30, 60, 0.12);
   --blur-glass: 16px;
-  --font-heading: "Trovical Calm", "Playfair Display", Georgia, serif;
+  --font-heading: "Instrument Serif", "Playfair Display", Georgia, serif;
   --font-body: Inter, system-ui, sans-serif;
   --font-hand: Caveat, "Segoe Print", "Bradley Hand", cursive;
 }
-/* Trovical Calm (free build) fuses "oo" into a watermarked ligature: keep ligatures off on titles. */
-.display, .h1, .h2 { font-variant-ligatures: none; font-feature-settings: "liga" 0, "dlig" 0; }
 .display { font-family: var(--font-heading); font-size: 72px; line-height: 76px; font-weight: 400; }
 .h1 { font-family: var(--font-heading); font-size: 56px; line-height: 62px; font-weight: 400; }
 .h2 { font-family: var(--font-heading); font-size: 40px; line-height: 48px; font-weight: 400; }

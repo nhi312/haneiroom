@@ -34,11 +34,11 @@ HaneiRoom is an AI assistant for interior designers: capture a client brief, let
 
 ## Typography
 
-- Set every title in Trovical Calm, the face of the HaneiRoom logo: `display` for the hero, `h1` for the final call to action, `h2` for section titles. Titles and the logo should read as one voice.
+- Set every title in Instrument Serif: `display` for the hero, `h1` for the final call to action, `h2` for section titles.
 - Set titles in `text-heading` (navy-700); a two-line title takes `text-accent` (rust-600) on line 2.
-- Set card and step titles in `h3` (Inter bold). Trovical Calm is for large titles only, never body text, buttons, navigation or anything under 24px.
+- Set card and step titles in `h3` (Inter bold). Instrument Serif is for large titles only, never body text, buttons, navigation or anything under 24px.
 - Set all other text in Inter (`body-lg`, `body`, `label`, `small`, `caption`).
-- Trovical Calm loads from `fonts/`. Those files are the free personal-use release (see `fonts/LICENSE-trovical-calm.txt`): buy a commercial web license before launch. The free files draw "." as a watermark, so periods fall back to the next font.
+- Instrument Serif loads from `fonts/` under the SIL Open Font License 1.1 (see `fonts/LICENSE-instrument-serif-OFL.txt`). It has one weight (plus an italic), so never bold a title.
 - Every style lists its mobile size in its usage note. Switch at 768px.
 
 ## Layout, radius and depth
