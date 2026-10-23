@@ -202,11 +202,12 @@
   /* ---------------------------------------------------------- 03 what changed */
   var aroundHead = $('[data-around]');
   var gallery = $('.gallery'), stage = $('.gallery__stage');
-  var scan = $('.scan'), thenNote = $('.tag-note--then'), reels = $$('.reel');
+  var scan = $('.scan'), pitch = $('.pitch'), reels = $$('.reel');
   var G = null, S = null, galTop = 0, galH = 0, panAmp = 3;
+  var FB = 12; // the phone's bezel, as .frame's --b
 
   function layoutGallery() {
-    [stage, scan, thenNote].concat(reels).forEach(function (el) { el.removeAttribute('style'); });
+    [stage, scan, pitch].concat(reels).forEach(function (el) { el.removeAttribute('style'); });
     G = S = null;
     // The room photo covers the screen. A wide screen sees nearly all of it, so the
     // camera only drifts; a phone sees a third, so it sweeps from the door to the window.
@@ -218,7 +219,7 @@
       if (moving()) layoutStack();
       return;
     }
-    var top = 150, b = 26; // room for the pinned title above the frame
+    var top = 150, b = FB; // room for the pinned title above the phone
     var avail = (vh - top - 28) * .9;
     var fh0 = Math.min(avail, 660) - 2 * b, fw0 = fh0 * 393 / 852;
     var cy = top + (vh - top) / 2;
@@ -229,19 +230,17 @@
     var x0 = (vw - 3 * rw - 2 * gap) / 2, y0 = top + (vh - top - rh - capH) / 2;
     G = {
       cy: cy,
-      phone: { x: vw / 2 - fw0 / 2 - b, y: cy - fh0 / 2 - b, w: fw0 + 2 * b, h: fh0 + 2 * b },
+      phone: { x: vw / 2 - fw0 / 2, y: cy - fh0 / 2, w: fw0, h: fh0 },
       slots: [0, 1, 2].map(function (i) { return { x: x0 + i * (rw + gap), y: y0, w: rw, h: rh }; })
     };
     stage.style.setProperty('--cy', cy.toFixed(0) + 'px');
     stage.style.setProperty('--fw', fw0.toFixed(1));
     stage.style.setProperty('--fh', fh0.toFixed(1));
 
-    var side = (vw - fw0) / 2 - b;
-    var noteW = clamp(side - 28, 150, 240);
-    thenNote.style.width = noteW + 'px';
-    // left of the phone, below the palette; the chair card sits on its right
-    thenNote.style.left = (vw / 2 - fw0 / 2 - b - 40 - noteW).toFixed(0) + 'px';
-    thenNote.style.top = (cy + 20).toFixed(0) + 'px';
+    // the pitch holds the left of the phone; the plan sheet and chair card its right
+    var pitchW = clamp((vw - fw0) / 2 - b - 72, 260, 360);
+    pitch.style.width = pitchW + 'px';
+    pitch.style.left = (vw / 2 - fw0 / 2 - b - 40 - pitchW).toFixed(0) + 'px';
     galTop = docTop(gallery);
     galH = gallery.offsetHeight;
   }
@@ -264,8 +263,11 @@
       var rh = reelH(cw), y0 = top + (H - 3 * rh - 2 * gap) / 2, nudge = Math.min(cw * .22, (vw - 32 - cw) / 2);
       slots = [0, 1, 2].map(function (i) { return { x: (vw - cw) / 2 + (i === 1 ? nudge : -nudge), y: y0 + i * (rh + gap), w: cw, h: rh }; });
     }
-    var pw = Math.min(vw * .64, 320, (H - 40) / 2.05), ph = Math.min(H - 40, pw * 2.05);
-    S = { phone: { x: (vw - pw) / 2, y: top + H - ph - 8, w: pw, h: ph }, slots: slots };
+    // the phone sits under the pitch while it holds
+    var py = 84 + pitch.offsetHeight + 20 + FB, ph = Math.max(vh - 16 - FB - py, 160), pw = Math.min(vw * .64, 320, ph / 2.05);
+    ph = Math.min(ph, pw * 2.05);
+    S = { phone: { x: (vw - pw) / 2, y: py, w: pw, h: ph }, slots: slots };
+    ['px', 'py', 'pw', 'ph'].forEach(function (k, i) { stage.style.setProperty('--' + k, [S.phone.x, S.phone.y, pw, ph][i].toFixed(1)); });
   }
 
   /* HaneiRoom's scan plays across the screen, then the phone breaks into HaneiAI's
@@ -298,16 +300,16 @@
     status.textContent = p < .38 ? 'Scanning your space…' : p < .66 ? 'Floor found' : p < .82 ? 'Pick a piece' : 'Looks right?';
   }
 
-  // From the phone's rect out to their own places between t0 and t1, a beat apart,
+  // From the phone (screen plus bezel) out to their own places between t0 and t1, a beat apart,
   // tipping as they go; from `out` they lift away again. Scrolling back reverses it all.
   // A screen is live (reels.js loops its demo) only while it sits still in place.
   function playReels(p, L, t0, t1, out) {
     reels.forEach(function (r, i) {
       var d = i * .015, m = ease(ramp(p, t0 + d, t1 + d)), o = ease(ramp(p, out + d, out + .03 + d));
-      var a = L.phone, z = L.slots[i];
+      var a = L.phone, z = L.slots[i], f = { x: a.x - FB, y: a.y - FB, w: a.w + 2 * FB, h: a.h + 2 * FB };
       setVars(r, {
-        x: lerp(a.x, z.x, m), y: lerp(a.y, z.y, m) - o * 80,
-        w: lerp(a.w, z.w, m), h: lerp(a.h, z.h, m),
+        x: lerp(f.x, z.x, m), y: lerp(f.y, z.y, m) - o * 80,
+        w: lerp(f.w, z.w, m), h: lerp(f.h, z.h, m),
         r: (1 - m) * (i - 1) * 7 + o * (1 - i) * 4,
         o: ramp(p, t0 - .02, t0) * (1 - o), co: ramp(m, .75, 1)
       });
@@ -316,33 +318,43 @@
     });
   }
 
+  // The pitch shows (and takes clicks) only while the phone holds still.
+  function showPitch(o) {
+    pitch.style.setProperty('--o', o.toFixed(3));
+    pitch.style.pointerEvents = o > .5 ? '' : 'none';
+  }
+
   function updateGallery() {
     if (!G) {
       if (!S) return;
-      // stacked: one pinned screen; the scan plays, shrinks into a phone, and the phone breaks into three
+      // stacked: one pinned screen; the scan plays and shrinks into a phone that holds
+      // under the pitch, then breaks into three small screens
       var gr = gallery.getBoundingClientRect(), q = clamp(-gr.top / Math.max(gr.height - vh, 1), 0, 1);
-      var c = ease(ramp(q, .5, .58)), ph = S.phone;
-      playScan(ramp(q, 0, .48), ramp(q, .5, .54));
+      var c = ease(ramp(q, .44, .52)), ph = S.phone;
+      playScan(ramp(q, 0, .42), ramp(q, .44, .48));
+      setVars(stage, { fo: ramp(q, .48, .53), sp: ramp(q, .72, .76) });
       setVars(scan, {
-        ct: c * ph.y, cx: c * ph.x, cb: c * (vh - ph.y - ph.h), cr: c * 28,
-        so: 1 - ramp(q, .6, .63)
+        ct: c * ph.y, cx: c * ph.x, cb: c * (vh - ph.y - ph.h), cr: c * 34,
+        vy: c * (ph.y + ph.h / 2 - vh / 2), vs: lerp(1, .7, c),
+        so: 1 - ramp(q, .72, .75)
       });
-      thenNote.style.setProperty('--o', (ramp(q, .5, .54) * (1 - ramp(q, .58, .61))).toFixed(3));
-      playReels(q, S, .6, .72, .95);
+      showPitch(ramp(q, .5, .55) * (1 - ramp(q, .69, .72)));
+      playReels(q, S, .72, .84, .95);
       return;
     }
     var p = clamp((window.scrollY - galTop) / (galH - vh), 0, 1);
-    // the camera view shrinks into a phone, then the phone breaks into three screens
-    var k = ease(ramp(p, .62, .7)), ph = G.phone;
-    setVars(stage, { fo: ramp(p, .64, .7), head: ramp(p, .68, .74), sp: ramp(p, .72, .76) });
-    playScan(ramp(p, .02, .55), ramp(p, .6, .64));
+    // the camera view shrinks into the phone, which holds beside the pitch,
+    // then breaks into three screens
+    var k = ease(ramp(p, .54, .61)), ph = G.phone;
+    setVars(stage, { fo: ramp(p, .57, .62), head: ramp(p, .6, .66), sp: ramp(p, .78, .82) });
+    playScan(ramp(p, .02, .5), ramp(p, .52, .56));
     setVars(scan, {
-      ct: k * ph.y, cx: k * ph.x, cb: k * (vh - ph.y - ph.h), cr: k * 24,
-      so: 1 - ramp(p, .72, .75)
+      ct: k * ph.y, cx: k * ph.x, cb: k * (vh - ph.y - ph.h), cr: k * 40,
+      so: 1 - ramp(p, .78, .81)
     });
-    thenNote.style.setProperty('--o', (ramp(p, .7, .73) * (1 - ramp(p, .73, .76))).toFixed(3));
-    stage.classList.toggle('is-now', p > .74);
-    playReels(p, G, .72, .82, .955);
+    showPitch(ramp(p, .6, .65) * (1 - ramp(p, .75, .78)));
+    stage.classList.toggle('is-now', p > .78);
+    playReels(p, G, .78, .87, .955);
   }
 
   var duo = $('.duo');
@@ -526,7 +538,7 @@
   function onModeChange() {
     setMode();
     if (!moving()) {
-      [comp, stage1, aroundHead, duo, stage, scan, thenNote].concat(reels, planLines, rows).forEach(function (el) { el.removeAttribute('style'); });
+      [comp, stage1, aroundHead, duo, stage, scan, pitch].concat(reels, planLines, rows).forEach(function (el) { el.removeAttribute('style'); });
       reels.forEach(function (r) { r.removeAttribute('data-live'); });
       // these carry their own layout inline, so only clear what the animation set
       flyers.forEach(function (el) { el.style.transform = ''; el.style.opacity = ''; });

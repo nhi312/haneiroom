@@ -412,24 +412,10 @@ a { color: inherit; }
 .is-now .gallery__then { opacity: 0; translate: 0 -8px; }
 .is-now .gallery__now { opacity: 1; translate: 0 0; }
 
-.frame {
-  --b: 26px;
-  position: relative;
-  background: var(--orange-300);
-  border-radius: 10px;
-  box-shadow: inset 0 0 0 5px var(--orange-500), inset 0 0 0 10px var(--orange-300), inset 0 0 0 13px var(--rust-600), 0 30px 60px rgba(59, 42, 20, .22);
-}
-.frame__inner {
-  position: absolute; inset: var(--b); overflow: hidden; border-radius: 4px;
-  background: linear-gradient(90deg, var(--navy-300), var(--lavender-200));
-  box-shadow: 0 0 0 4px var(--orange-500), inset 0 6px 16px rgba(59, 42, 20, .28);
-}
-.frame__corner { position: absolute; z-index: 3; width: clamp(54px, 6.4vw, 92px); }
-.frame__corner--tl { left: -26px; top: -26px; }
-.frame__corner--tr { right: -26px; top: -26px; rotate: 90deg; }
-.frame__corner--br { right: -26px; bottom: -26px; rotate: 180deg; }
-.frame__corner--bl { left: -26px; bottom: -26px; rotate: 270deg; }
-.frame__crest { position: absolute; z-index: 3; left: 50%; top: -30px; width: clamp(100px, 11vw, 150px); translate: -50% 0; }
+/* the phone: a bezel ring drawn over the camera view, which is clipped to its screen */
+.frame { --b: 12px; position: relative; z-index: 5; border: var(--b) solid #16171d; border-radius: 52px; box-shadow: 0 0 0 1.5px #3b3d47, 0 30px 60px rgba(30, 30, 60, .3); pointer-events: none; }
+.frame::before { content: ""; position: absolute; left: calc(var(--b) * -1 - 4px); top: 22%; width: 3px; height: 12%; border-radius: 2px; background: #2b2d36; }
+.frame__island { position: absolute; left: 50%; top: 10px; width: 30%; max-width: 110px; height: 26px; translate: -50% 0; border-radius: 20px; background: #000; }
 
 /* HaneiAI: the phone breaks into three screens, one per feature (Idea Input,
    Idea Brief, Product sort out). Each is a small HaneiAI window whose UI is drawn
@@ -667,8 +653,14 @@ a { color: inherit; }
   .scan__price b { font-size: 22px; line-height: 26px; }
 }
 
-.tag-note { position: relative; z-index: 5; width: 240px; padding: 14px 16px; background: var(--white); box-shadow: var(--shadow-md); font-size: 14px; line-height: 20px; rotate: -2deg; }
-.tag-note__k { margin-bottom: 4px; font: 700 12px/16px var(--font-body); letter-spacing: .12em; text-transform: uppercase; color: var(--rust-600); }
+/* the HaneiRoom pitch beside the phone: what it does, then the App Store */
+.pitch { position: relative; z-index: 6; width: min(340px, 100%); padding: 22px 24px 24px; border-radius: 22px; background: rgba(255, 255, 255, .92); box-shadow: var(--shadow-lg); }
+.pitch__k { font: 700 12px/16px var(--font-body); letter-spacing: .12em; text-transform: uppercase; color: var(--rust-600); }
+.pitch__t { margin: 8px 0 14px; font: 400 32px/1.05 var(--font-heading); color: var(--navy-700); }
+.pitch__steps { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; counter-reset: step; }
+.pitch__steps li { position: relative; padding-left: 34px; font: 400 15px/22px var(--font-body); color: var(--ink-900); counter-increment: step; }
+.pitch__steps li::before { content: counter(step); position: absolute; left: 0; top: 0; display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: var(--orange-500); font: 700 12px/1 var(--font-body); color: var(--brown-900); }
+.pitch .appstore { margin-top: 18px; }
 
 .collage { position: absolute; z-index: 1; display: none; }
 .collage--palette { display: none; grid-template-columns: repeat(3, 1fr); gap: 6px; width: 150px; padding: 12px; background: var(--white); box-shadow: var(--shadow-md); }
@@ -676,7 +668,7 @@ a { color: inherit; }
 
 /* large screens: the scan fills the screen, shrinks into a phone, and the phone
    breaks into three HaneiAI screens over the blurred room */
-.pin .gallery { height: 720vh; }
+.pin .gallery { height: 820vh; }
 .pin .gallery__stage { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; }
 .pin .frame, .pin .collage { position: absolute; left: 50%; top: var(--cy, 50%); opacity: calc(var(--fo, 1) * (1 - var(--sp, 0))); }
 .pin .gallery__bg { display: block; position: absolute; inset: -40px; filter: blur(calc(var(--bgb, 16) * 1px)) saturate(1.1); }
@@ -685,7 +677,7 @@ a { color: inherit; }
 .pin .scan { position: absolute; inset: 0; opacity: var(--so, 1); clip-path: inset(calc(var(--ct, 0) * 1px) calc(var(--cx, 0) * 1px) calc(var(--cb, 0) * 1px) round calc(var(--cr, 0) * 1px)); }
 .pin .scan__view { position: absolute; inset: 0; }
 .pin .frame { width: calc(var(--fw, 300) * 1px + var(--b) * 2); height: calc(var(--fh, 560) * 1px + var(--b) * 2); translate: -50% -50%; }
-.pin .tag-note { position: absolute; opacity: var(--o, 1); }
+.pin .pitch { position: absolute; top: var(--cy, 50%); opacity: var(--o, 1); translate: calc((1 - var(--o, 1)) * -40px) -50%; }
 .pin .collage { display: block; }
 .pin .collage--palette { display: grid; }
 .pin .collage--palette { translate: calc(var(--fw, 300) * -.5px - 130px) calc(var(--fh, 560) * -.5px - 86px); rotate: -8deg; }
@@ -710,18 +702,24 @@ html:not(.pin) .scan { align-self: stretch; margin: 0 calc(var(--space-4) * -1);
 html:not(.pin) .scan__view { position: sticky; top: 0; height: 100vh; height: 100svh; }
 html.rm .scan { height: auto; }
 html.rm .scan__view { position: relative; height: min(88vh, 780px); }
-html:not(.pin) .tag-note { width: min(320px, 100%); }
-html:not(.pin) .tag-note--then { order: 1; margin-top: -8px; }
-html:not(.pin) .frame { display: none; }
+html:not(.pin) .pitch { order: 1; margin-top: -8px; }
+html:not(.pin):not(.motion) .frame { display: none; }
 
 /* with motion, the stack pins too: the scan plays, shrinks into a phone, and the
    phone breaks into three small screens on the same screen */
-.motion:not(.pin) .gallery { height: 640vh; height: 640svh; }
+.motion:not(.pin) .gallery { height: 760vh; height: 760svh; }
 .motion:not(.pin) .gallery__stage { position: sticky; top: 0; display: block; height: 100vh; height: 100svh; padding: 0; overflow: hidden; }
 .motion:not(.pin) .scan { position: absolute; inset: 0; height: auto; margin: 0; opacity: var(--so, 1); clip-path: inset(calc(var(--ct, 0) * 1px) calc(var(--cx, 0) * 1px) calc(var(--cb, 0) * 1px) round calc(var(--cr, 0) * 1px)); }
-.motion:not(.pin) .scan__view { position: absolute; inset: 0; height: auto; }
-.motion:not(.pin) .tag-note { position: absolute; left: 50%; margin: 0; translate: -50% 0; opacity: var(--o, 1); }
-.motion:not(.pin) .tag-note--then { top: 88px; rotate: -2deg; }
+/* as it shrinks into the phone below the pitch, the camera view follows it down so the chair stays in frame */
+.motion:not(.pin) .scan__view { position: absolute; inset: 0; height: auto; translate: 0 calc(var(--vy, 0) * 1px); scale: var(--vs, 1); }
+.motion:not(.pin) .pitch { position: absolute; left: 50%; top: 84px; width: min(360px, calc(100% - 32px)); margin: 0; padding: 18px 20px 20px; opacity: var(--o, 1); translate: -50% calc((1 - var(--o, 1)) * -24px); }
+.motion:not(.pin) .pitch__t { font-size: 28px; }
+/* the phone frame follows the screen the camera view shrank into */
+.motion:not(.pin) .frame {
+  position: absolute; left: calc(var(--px, 0) * 1px - var(--b)); top: calc(var(--py, 0) * 1px - var(--b));
+  width: calc(var(--pw, 0) * 1px + var(--b) * 2); height: calc(var(--ph, 0) * 1px + var(--b) * 2);
+  border-radius: 46px; opacity: calc(var(--fo, 0) * (1 - var(--sp, 0)));
+}
 
 /* two products, two speech bubbles: each slides in from its own side as it scrolls in */
 .sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
@@ -889,13 +887,6 @@ html:not(.pin) .frame { display: none; }
   -webkit-backdrop-filter: var(--lg-blur); backdrop-filter: var(--lg-blur);
 }
 .demo__box { background: linear-gradient(180deg, rgba(255, 252, 246, .72), rgba(250, 244, 234, .45)); border-color: var(--lg-edge); box-shadow: var(--lg-shadow), var(--shadow-lg); -webkit-backdrop-filter: blur(28px) saturate(1.8); backdrop-filter: blur(28px) saturate(1.8); }
-.frame {
-  border-radius: 36px; background: var(--lg-fill); border: 1px solid var(--lg-edge);
-  box-shadow: var(--lg-shadow), 0 30px 60px rgba(30, 30, 60, .2);
-  -webkit-backdrop-filter: var(--lg-blur); backdrop-filter: var(--lg-blur);
-}
-.frame__inner { border-radius: 24px; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .6), inset 0 2px 10px rgba(30, 30, 60, .12); }
-.frame__corner, .frame__crest { display: none; }
 
 /* ------------------------------------------------------------ narrower screens */
 @media (max-width: 1023px) {
@@ -948,12 +939,6 @@ html:not(.pin) .frame { display: none; }
 
   .changed__head { padding: var(--space-24) var(--space-4) var(--space-8); }
   .changed__lede { font-size: 17px; line-height: 26px; }
-  .frame { --b: 16px; }
-  .frame__corner { width: 48px; }
-  .frame__corner--tl { left: -16px; top: -16px; }
-  .frame__corner--tr { right: -16px; top: -16px; }
-  .frame__corner--br { right: -16px; bottom: -16px; }
-  .frame__corner--bl { left: -16px; bottom: -16px; }
 
   .compare { padding: var(--space-16) var(--space-4) var(--space-24); }
 
