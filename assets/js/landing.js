@@ -1,8 +1,8 @@
-/* HaneiRoom landing page: scroll progress for the three chapters.
+/* HaneiRoom landing page: the hero's tape, then scroll progress for HaneiRoom and HaneiAI.
    One passive scroll listener feeds a single requestAnimationFrame update.
    Geometry is measured on resize only. Without motion every scene is left in
-   its finished state by the CSS, and only the trail, the app scale, the torn
-   edges and the demo form run. */
+   its finished state by the CSS, and only the app scale, the HaneiAI anchor
+   and the demo form run. */
 (function () {
   'use strict';
 
@@ -40,176 +40,54 @@
   function setVars(el, vars) { for (var k in vars) el.style.setProperty('--' + k, vars[k].toFixed(4)); }
   function docTop(el) { return el.getBoundingClientRect().top + window.scrollY; }
 
-  /* Catmull-Rom through points, as an SVG path. */
-  function curve(pts) {
-    var d = 'M' + pts[0][0].toFixed(1) + ' ' + pts[0][1].toFixed(1);
-    for (var i = 0; i < pts.length - 1; i++) {
-      var p0 = pts[Math.max(0, i - 1)], p1 = pts[i], p2 = pts[i + 1], p3 = pts[Math.min(pts.length - 1, i + 2)];
-      d += 'C' + [p1[0] + (p2[0] - p0[0]) / 6, p1[1] + (p2[1] - p0[1]) / 6,
-        p2[0] - (p3[0] - p1[0]) / 6, p2[1] - (p3[1] - p1[1]) / 6, p2[0], p2[1]]
-        .map(function (v) { return v.toFixed(1); }).join(' ');
-    }
-    return d;
-  }
-
   var vw = 0, vh = 0;
   var nav = $('[data-nav]');
 
-  /* ---------------------------------------------------------- 01 the mess */
-  // The tools sit there, the confusion piles on, then both fly out and leave
-  // the chair, the plan and its measurements.
-  var mess = $('.mess'), stage1 = $('.mess__stage'), comp = $('.mess__comp');
-  var planLines = $$('.mess__plan .l');
-  var flyers = $$('.mess__comp .mi, .mess__comp .cf');
-  var cards = $$('.sorted .sc');
-  var messTop = 0, messH = 0, live = [];
-
-  function layoutMess() {
-    messTop = docTop(mess);
-    messH = mess.offsetHeight;
-    var w = comp.clientWidth, h = comp.clientHeight;
-    var tools = 0, mixed = 0;
-    live = flyers.filter(function (el) { return el.offsetParent !== null; }).map(function (el) {
-      var isCf = el.classList.contains('cf');
-      var cx = el.offsetLeft / w - .5, cy = el.offsetTop / h - .62;
-      var len = Math.hypot(cx, cy) || 1;
-      var k = isCf ? mixed++ : tools++;
-      return { el: el, cf: isCf, k: k, r: parseFloat(getComputedStyle(el).getPropertyValue('--r')) || 0, dx: cx / len, dy: cy / len, spin: k % 2 ? 1 : -1 };
-    });
-    live.forEach(function (it) {
-      var n = it.cf ? mixed : tools;
-      it.tin = .08 + it.k * (.28 / n);
-      it.tout = .46 + ((it.k * 7) % n) / n * .18 + (it.cf ? 0 : .04);
-    });
-  }
-
-  function updateMess() {
-    var p = clamp((window.scrollY - messTop) / Math.max(1, messH - vh), 0, 1);
-    var w = comp.clientWidth;
-    live.forEach(function (it) {
-      var x = ramp(p, it.tout, it.tout + .1), out = easeIn(x);
-      var tx = out * it.dx * w * 1.1, ty = out * it.dy * w * 1.1;
-      var rot = it.r + out * it.spin * 140, sc = 1 - .3 * out, op = 1 - ramp(x, .5, 1);
-      if (it.cf) {
-        var e = ramp(p, it.tin, it.tin + .07), bk = easeBack(e);
-        tx += (1 - bk) * it.dx * w * .25;
-        ty += (1 - bk) * (it.dy * w * .25 - 40);
-        rot += (1 - bk) * it.spin * 30;
-        sc *= .5 + .5 * bk;
-        op *= Math.min(1, e * 3);
-      } else {
-        var drift = ease(ramp(p, 0, .4)) * w * .025;
-        tx += it.dx * drift;
-        ty += it.dy * drift;
+  /* ---------------------------------------------------------- 01 the tape */
+  // Marks each tape along one edge: a tick every centimetre (data-step units), a
+  // longer one every half and a number every whole. The paths never change, so this
+  // runs once; the tick sizes follow the tape's width (data-edge is half of it).
+  function markTape() {
+    var NS = 'http://www.w3.org/2000/svg';
+    $$('.ruler').forEach(function (svg) {
+      var path = $('.ruler__path', svg), ticks = $('.ruler__ticks', svg);
+      if (!path || !path.getTotalLength) return;
+      var edge = +svg.dataset.edge, step = +svg.dataset.step, u = edge / 21;
+      var len = path.getTotalLength(), d = '', k = 0;
+      for (var l = step; l < len - step; l += step, k++) {
+        var a = path.getPointAtLength(l), b = path.getPointAtLength(l + 1);
+        var tx = b.x - a.x, ty = b.y - a.y, n = Math.hypot(tx, ty) || 1;
+        var nx = -ty / n, ny = tx / n, size = (k % 10 === 9 ? 15 : k % 5 === 4 ? 10 : 6) * u;
+        d += 'M' + (a.x + nx * edge).toFixed(1) + ' ' + (a.y + ny * edge).toFixed(1) +
+          'L' + (a.x + nx * (edge - size)).toFixed(1) + ' ' + (a.y + ny * (edge - size)).toFixed(1);
+        if (k % 10 === 9) {
+          var t = document.createElementNS(NS, 'text');
+          t.setAttribute('transform', 'translate(' + (a.x - nx * 2 * u).toFixed(1) + ' ' + (a.y - ny * 2 * u).toFixed(1) + ') rotate(' + (Math.atan2(ty, tx) * 180 / Math.PI).toFixed(1) + ')');
+          t.setAttribute('text-anchor', 'middle');
+          t.textContent = (k + 1) / 10;
+          ticks.appendChild(t);
+        }
       }
-      it.el.style.transform = 'translate(-50%,-50%) translate(' + tx.toFixed(1) + 'px,' + ty.toFixed(1) + 'px) rotate(' + rot.toFixed(1) + 'deg) scale(' + sc.toFixed(3) + ')';
-      it.el.style.opacity = op.toFixed(3);
+      var marks = document.createElementNS(NS, 'path');
+      marks.setAttribute('d', d);
+      ticks.insertBefore(marks, ticks.firstChild);
     });
-    var d = ramp(p, .14, .42), n = planLines.length;
-    planLines.forEach(function (l, i) {
-      var s = i / n * .65;
-      l.style.strokeDashoffset = (1 - ramp(d, s, s + .35)).toFixed(3);
-    });
-    setVars(comp, { 'plan-o': ramp(p, .12, .24), clean: ramp(p, .58, .66), e: ease(ramp(p, .5, .6)), fade: ramp(p, .62, .7), bgin: ramp(p, .62, .72) });
-    cards.forEach(function (c, i) { c.style.setProperty('--s', ease(ramp(p, .66 + i * .025, .74 + i * .025)).toFixed(3)); });
-    setVars(stage1, { swap: ramp(p, .56, .66) });
   }
 
-  /* ---------------------------------------------------------- 02 the trail */
-  var proc = $('.process'), trail = $('.trail');
-  var reveal = $('.trail__reveal'), dash = $('.trail__dash'), head = $('.trail__head');
-  var stops = $$('[data-stop]');
-  var trailLen = 0, procTop = 0, samples = [], stopLens = [];
-
-  function buildTrail() {
-    var box = proc.getBoundingClientRect();
-    var w = box.width, h = proc.offsetHeight;
-    var headBox = $('.process__head').getBoundingClientRect();
-    var pts = [[w / 2, headBox.bottom - box.top + 12]];
-    var badges = [];
-    stops.forEach(function (s, i) {
-      var n = $('.stop__num', s).getBoundingClientRect();
-      var cx = n.left + n.width / 2 - box.left, cy = n.top + n.height / 2 - box.top;
-      badges.push([cx, cy]);
-      pts.push([cx, cy]);
-      if (i < stops.length - 1) { pts.push([cx, s.getBoundingClientRect().bottom - box.top + 28]); return; }
-      // the last band ends the section, so the trail stops on it: it runs down
-      // beside the picks card, then turns and points straight at its middle
-      var pick = $('.ui--picks', s), card = pick.getBoundingClientRect();
-      // measured before the stop reveals, the card still sits on its entrance offset
-      var lift = parseFloat((getComputedStyle(pick).translate || '').split(' ')[1]) || 0;
-      var my = (card.top + card.bottom) / 2 - lift - box.top, cl = card.left - box.left - 16;
-      var gap = cl - cx;
-      if (gap > 90) {
-        pts.push([cx, my - 70]);
-        pts.push([cx + gap * .4, my]);
-      } else pts.push([cx, my - 40]);
-      pts.push([cl, my]);
-    });
-
-    trail.setAttribute('viewBox', '0 0 ' + w.toFixed(0) + ' ' + h.toFixed(0));
-    var d = curve(pts);
-    dash.setAttribute('d', d);
-    reveal.setAttribute('d', d);
-    trailLen = dash.getTotalLength();
-    reveal.style.strokeDasharray = trailLen + ' ' + trailLen;
-
-    // y of the trail along its length, made monotonic so a small overshoot never stalls it
-    samples = [];
-    var maxY = -Infinity, k = 400;
-    for (var i = 0; i <= k; i++) {
-      var l = trailLen * i / k, pt = dash.getPointAtLength(l);
-      maxY = Math.max(maxY, pt.y);
-      samples.push({ l: l, y: maxY, x: pt.x, py: pt.y });
-    }
-    stopLens = badges.map(function (b) {
-      var best = 0, bestD = Infinity;
-      samples.forEach(function (s) {
-        var dd = (s.x - b[0]) * (s.x - b[0]) + (s.py - b[1]) * (s.py - b[1]);
-        if (dd < bestD) { bestD = dd; best = s.l; }
-      });
-      return best;
-    });
-
-    var end = dash.getPointAtLength(trailLen), before = dash.getPointAtLength(trailLen - 16);
-    var a = Math.atan2(end.y - before.y, end.x - before.x), r = 20;
-    head.setAttribute('d', 'M' + (end.x + Math.cos(a + 2.4) * r).toFixed(1) + ' ' + (end.y + Math.sin(a + 2.4) * r).toFixed(1) +
-      'L' + end.x.toFixed(1) + ' ' + end.y.toFixed(1) +
-      'L' + (end.x + Math.cos(a - 2.4) * r).toFixed(1) + ' ' + (end.y + Math.sin(a - 2.4) * r).toFixed(1));
-    procTop = docTop(proc);
-  }
-
-  function drawnLength() {
-    if (!moving()) return trailLen;
-    var line = window.scrollY + vh * .62 - procTop;
-    var lo = 0, hi = samples.length - 1;
-    if (samples[0].y > line) return 0;
-    while (lo < hi) {
-      var mid = (lo + hi + 1) >> 1;
-      if (samples[mid].y <= line) lo = mid; else hi = mid - 1;
-    }
-    return samples[lo].l;
-  }
-
-  function updateTrail() {
-    if (!trailLen) return;
-    var drawn = drawnLength();
-    reveal.style.strokeDashoffset = (trailLen - drawn).toFixed(1);
-    head.style.opacity = drawn >= trailLen - 4 ? 1 : 0;
-    stops.forEach(function (s, i) { s.classList.toggle('is-on', drawn >= stopLens[i] - 6); });
-  }
-
-  /* ---------------------------------------------------------- 03 what changed */
-  var aroundHead = $('[data-around]');
-  var gallery = $('.gallery'), stage = $('.gallery__stage');
+  /* ---------------------------------------------------------- 02 HaneiRoom, then HaneiAI */
+  var gallery = $('.gallery'), stage = $('.gallery__stage'), mark = $('.gallery__mark');
   var scan = $('.scan'), scanView = $('.scan__view'), pitch = $('.pitch'), reels = $$('.reel');
+  var bridge = $('.bridge'), aiHead = $('.ai-head'), desk = $('.deskwin');
   var G = null, S = null, galTop = 0, galH = 0, panAmp = 3;
-  var FB = 12; // the phone's bezel, as .frame's --b
+  var FB = 7; // the phone's bezel, as .frame's --b
+  var PK = 1.4; // how much bigger the pieces stand on a phone-sized screen, as .scan's --chair-k there
   var full = null, screen = null; // the camera view at full size, and the phone screen it shrinks into
 
   function layoutGallery() {
-    [stage, scan, scanView, pitch].concat(reels).forEach(function (el) { el.removeAttribute('style'); });
+    [stage, scan, scanView, pitch, bridge, aiHead, desk].concat(reels).forEach(function (el) { el.removeAttribute('style'); });
     G = S = null;
+    galTop = docTop(gallery);
+    galH = gallery.offsetHeight;
     // The room photo covers the screen. A wide screen sees nearly all of it, so the
     // camera only drifts; a phone sees a third, so it sweeps from the door to the window.
     var W = Math.max(vw, vh * 1264 / 843);
@@ -220,36 +98,48 @@
     // phone's own screen) and scaled into the bezel, so its controls and shop card sit
     // where the app puts them. The room photo refits to it like it does to any screen.
     var sw = vw <= 480 ? vw : 393, sh = vw <= 480 ? vh : 852;
-    full = { w: scan.clientWidth || vw, h: scan.clientHeight || vh, fit: fitFor(vw, vh), k: vw <= 767 ? 2.3 : 1 };
-    screen = { w: sw, h: sh, fit: fitFor(sw, sh), k: 2.3 };
+    full = { w: scan.clientWidth || vw, h: scan.clientHeight || vh, fit: fitFor(vw, vh), k: vw <= 767 ? PK : 1 };
+    screen = { w: sw, h: sh, fit: fitFor(sw, sh), k: PK };
     if (!pinned()) {
       if (moving()) layoutStack();
+      placeMark(.88);
       return;
     }
-    var top = 150, b = FB; // room for the pinned title above the phone
+    var top = 96, b = FB;
     var avail = (vh - top - 28) * .9;
     var fh0 = Math.min(avail, 660) - 2 * b, fw0 = fh0 * 393 / 852;
     var cy = top + (vh - top) / 2;
-    // the three screens sit in a row under the title, each with its caption below
-    var gap = 24, capH = 84;
-    var rw = Math.min((vw - 80 - 2 * gap) / 3, 460), rh = reelH(rw);
-    if (rh + capH > vh - top - 20) { rh = vh - top - 20 - capH; rw = reelW(rh); }
-    var x0 = (vw - 3 * rw - 2 * gap) / 2, y0 = top + (vh - top - rh - capH) / 2;
+    // HaneiAI's window sits under its title, the three screens in a row inside it,
+    // each with its caption below
+    var wtop = 84 + aiHead.offsetHeight + 18, bar = 40, pad = 22, gap = 24, capH = 84;
+    var inner = vh - 20 - wtop - bar - 2 * pad;
+    var rw = Math.min((vw - 120 - 2 * pad - 2 * gap) / 3, 440), rh = reelH(rw);
+    if (rh + capH > inner) { rh = inner - capH; rw = reelW(rh); }
+    var ww = 3 * rw + 2 * gap + 2 * pad, wh = bar + 2 * pad + rh + capH;
+    var wx = (vw - ww) / 2, wy = wtop + (vh - 20 - wtop - wh) / 2;
     G = {
       cy: cy,
       phone: { x: vw / 2 - fw0 / 2, y: cy - fh0 / 2, w: fw0, h: fh0 },
-      slots: [0, 1, 2].map(function (i) { return { x: x0 + i * (rw + gap), y: y0, w: rw, h: rh }; })
+      desk: { x: wx, y: wy, w: ww, h: wh },
+      slots: [0, 1, 2].map(function (i) { return { x: wx + pad + i * (rw + gap), y: wy + bar + pad, w: rw, h: rh }; })
     };
     stage.style.setProperty('--cy', cy.toFixed(0) + 'px');
     stage.style.setProperty('--fw', fw0.toFixed(1));
     stage.style.setProperty('--fh', fh0.toFixed(1));
 
-    // the pitch holds the left of the phone; the plan sheet and chair card its right
+    // the pitch, then "Love what you see?", hold the left of the phone; the plan sheet and chair card its right
     var pitchW = clamp((vw - fw0) / 2 - b - 72, 260, 360);
-    pitch.style.width = pitchW + 'px';
-    pitch.style.left = (vw / 2 - fw0 / 2 - b - 40 - pitchW).toFixed(0) + 'px';
-    galTop = docTop(gallery);
-    galH = gallery.offsetHeight;
+    [pitch, bridge].forEach(function (el) {
+      el.style.width = pitchW + 'px';
+      el.style.left = (vw / 2 - fw0 / 2 - b - 40 - pitchW).toFixed(0) + 'px';
+    });
+    placeMark(.9);
+  }
+
+  // The HaneiAI link scrolls to where the three screens are playing, or to its
+  // title when the page doesn't pin.
+  function placeMark(at) {
+    mark.style.top = (moving() ? at * (galH - vh) : aiHead.offsetTop).toFixed(0) + 'px';
   }
 
   function fitFor(w, h) { var W = Math.max(w, h * 1264 / 843); return Math.min(1, w * .84 / (W * .495)); }
@@ -271,117 +161,144 @@
   function reelH(w) { return 46 + (w - 20) * 400 / 440; }
   function reelW(h) { return 20 + (h - 46) * 440 / 400; }
 
-  // Stacked: the camera view shrinks into a phone, which breaks into three small
-  // screens down the page, nudged left, right, left. When a row gives bigger
+  // Stacked: the camera view shrinks into a phone, which opens into HaneiAI's
+  // window holding three small screens down the page. When a row gives bigger
   // screens (a phone on its side), they sit side by side instead.
   function layoutStack() {
-    var top = 76, H = vh - top - 16, gap = 12, slots;
-    var cw = Math.min(reelW((H - 2 * gap) / 3), vw * .76, 460);
-    var rowW = Math.min((vw - 32 - 2 * gap) / 3, reelW(H), 460);
+    var bar = 30, pad = 10, gap = 10, slots;
+    var top = 72 + aiHead.offsetHeight + 12 + bar + pad, H = vh - top - 12 - pad;
+    var cw = Math.min(reelW((H - 2 * gap) / 3), vw - 32 - 2 * pad, 460);
+    var rowW = Math.min((vw - 32 - 2 * pad - 2 * gap) / 3, reelW(H), 460);
     if (rowW > cw) {
       var rh0 = reelH(rowW), x0 = (vw - 3 * rowW - 2 * gap) / 2;
       slots = [0, 1, 2].map(function (i) { return { x: x0 + i * (rowW + gap), y: top + (H - rh0) / 2, w: rowW, h: rh0 }; });
     } else {
-      var rh = reelH(cw), y0 = top + (H - 3 * rh - 2 * gap) / 2, nudge = Math.min(cw * .22, (vw - 32 - cw) / 2);
-      slots = [0, 1, 2].map(function (i) { return { x: (vw - cw) / 2 + (i === 1 ? nudge : -nudge), y: y0 + i * (rh + gap), w: cw, h: rh }; });
+      var rh = reelH(cw), y0 = top + (H - 3 * rh - 2 * gap) / 2;
+      slots = [0, 1, 2].map(function (i) { return { x: (vw - cw) / 2, y: y0 + i * (rh + gap), w: cw, h: rh }; });
     }
+    var a = slots[0], z = slots[2];
+    var dk = { x: a.x - pad, y: a.y - pad - bar, w: z.x + z.w - a.x + 2 * pad, h: z.y + z.h - a.y + 2 * pad + bar };
     // the phone sits under the pitch while it holds
     var py = 84 + pitch.offsetHeight + 20 + FB, ph = Math.max(vh - 16 - FB - py, 160), pw = Math.min(vw * .64, 320, ph * screen.w / screen.h);
     ph = pw * screen.h / screen.w;
-    S = { phone: { x: (vw - pw) / 2, y: py, w: pw, h: ph }, slots: slots };
+    S = { phone: { x: (vw - pw) / 2, y: py, w: pw, h: ph }, desk: dk, slots: slots };
     ['px', 'py', 'pw', 'ph'].forEach(function (k, i) { stage.style.setProperty('--' + k, [S.phone.x, S.phone.y, pw, ph][i].toFixed(1)); });
   }
 
-  /* HaneiRoom's scan plays across the screen, then the phone breaks into HaneiAI's
-     three screens. Both run from a 0..1 progress, so the same code serves the
-     pinned stage and the stack. */
+  /* HaneiRoom's scan plays across the screen, the phone holds beside its pitch, then
+     it opens into HaneiAI's desktop window, which splits into three screens. All of
+     it runs from a 0..1 progress, so the same code serves the pinned stage and the stack. */
   var status = $('[data-status]');
 
-  // Scan the room, find the floor, measure it, pick the chair, place that same chair,
-  // then tap Buy and open its shop card.
+  // Scan the room, find the floor, measure it, pick three pieces from the tray, place
+  // the chair and table, hang the print, swap the seat for another and back, then tap
+  // Buy and open the shop card.
   function playScan(p) {
-    var sweep = ramp(p, .04, .4);
+    var sweep = ramp(p, .04, .32);
     setVars(scan, {
-      ui: ramp(p, 0, .06),
+      ui: ramp(p, 0, .05),
       pan: Math.sin(sweep * Math.PI * 2) * panAmp,
-      zoom: lerp(1.08, 1, ease(ramp(p, .34, .46))),
-      floor: ease(ramp(p, .38, .5)),
-      outline: ramp(p, .42, .54),
-      dims: easeBack(ramp(p, .5, .56)),
-      marker: ramp(p, .56, .6) * (1 - ramp(p, .78, .82)),
-      place: ramp(p, .58, .62) * (1 - ramp(p, .66, .7)),
-      sheet: ease(ramp(p, .66, .71)) * (1 - ease(ramp(p, .76, .8))),
-      tap: ramp(p, .73, .75) * (1 - ramp(p, .76, .78)),
-      chair: easeBack(ramp(p, .79, .85)),
-      foot: ramp(p, .82, .87),
-      buy: ramp(p, .85, .88),
-      btap: ramp(p, .89, .91) * (1 - ramp(p, .92, .94)),
-      deal: ease(ramp(p, .92, .97))
+      zoom: lerp(1.08, 1, ease(ramp(p, .28, .38))),
+      floor: ease(ramp(p, .32, .42)),
+      outline: ramp(p, .36, .46),
+      dims: easeBack(ramp(p, .44, .49)),
+      marker: ramp(p, .48, .51) * (1 - ramp(p, .66, .69)),
+      place: ramp(p, .49, .52) * (1 - ramp(p, .53, .56)),
+      sheet: ease(ramp(p, .54, .58)) * (1 - ease(ramp(p, .7, .73))),
+      k1: easeBack(ramp(p, .59, .605)), k2: easeBack(ramp(p, .615, .63)), k3: easeBack(ramp(p, .64, .655)),
+      tap: ramp(p, .675, .685) * (1 - ramp(p, .69, .7)),
+      chair: easeBack(ramp(p, .71, .76)), table: easeBack(ramp(p, .745, .795)), poster: ease(ramp(p, .79, .83)),
+      foot: ramp(p, .73, .8),
+      swp: ramp(p, .84, .865) * (1 - ramp(p, .92, .94)),
+      sw: ease(ramp(p, .865, .88)) * (1 - ease(ramp(p, .895, .91))),
+      buy: ramp(p, .93, .95),
+      btap: ramp(p, .955, .965) * (1 - ramp(p, .966, .975)),
+      deal: ease(ramp(p, .965, .995))
     });
-    status.textContent = p < .38 ? 'Scanning your space…' : p < .66 ? 'Floor found' : p < .82 ? 'Pick a piece' : 'Looks right?';
+    status.textContent = p < .32 ? 'Scanning your space…' : p < .54 ? 'Floor found' : p < .71 ? 'Pick your pieces' : p < .79 ? 'Placing 3 pieces' : p < .84 ? 'Posters too' : p < .93 ? 'Swap and compare' : 'Looks right?';
   }
 
-  // From the phone (screen plus bezel) out to their own places between t0 and t1, a beat apart,
-  // tipping as they go; from `out` they lift away again. Scrolling back reverses it all.
-  // A screen is live (reels.js loops its demo) only while it sits still in place.
+  // The phone (screen plus bezel) grows into HaneiAI's window between t0 and t1,
+  // and lifts away with the screens from `out`.
+  function playDesk(p, L, t0, t1, out) {
+    var k = ease(ramp(p, t0, t1)), o = ease(ramp(p, out, out + .03));
+    var a = L.phone, z = L.desk, f = { x: a.x - FB, y: a.y - FB, w: a.w + 2 * FB, h: a.h + 2 * FB };
+    setVars(desk, {
+      x: lerp(f.x, z.x, k), y: lerp(f.y, z.y, k) - o * 80, w: lerp(f.w, z.w, k), h: lerp(f.h, z.h, k),
+      rad: lerp(47, 22, k), o: ramp(p, t0 - .01, t0 + .01) * (1 - o), bo: ramp(k, .6, 1)
+    });
+  }
+
+  // Into the window, a beat apart: each screen rises from the middle of the window to
+  // its own place, tipping a little as it goes; from `out` they lift away again.
+  // Scrolling back reverses it all. A screen is live (reels.js loops its demo) only
+  // while it sits still in place.
   function playReels(p, L, t0, t1, out) {
+    var mid = L.desk.x + L.desk.w / 2;
     reels.forEach(function (r, i) {
       var d = i * .015, m = ease(ramp(p, t0 + d, t1 + d)), o = ease(ramp(p, out + d, out + .03 + d));
-      var a = L.phone, z = L.slots[i], f = { x: a.x - FB, y: a.y - FB, w: a.w + 2 * FB, h: a.h + 2 * FB };
+      var z = L.slots[i];
       setVars(r, {
-        x: lerp(f.x, z.x, m), y: lerp(f.y, z.y, m) - o * 80,
-        w: lerp(f.w, z.w, m), h: lerp(f.h, z.h, m),
-        r: (1 - m) * (i - 1) * 7 + o * (1 - i) * 4,
-        o: ramp(p, t0 - .02, t0) * (1 - o), co: ramp(m, .75, 1)
+        x: lerp(lerp(z.x, mid - z.w / 2, .6), z.x, m), y: z.y + (1 - m) * 60 - o * 80,
+        w: z.w, h: z.h,
+        r: (1 - m) * (i - 1) * 4 + o * (1 - i) * 4,
+        o: ramp(m, 0, .4) * (1 - o), co: ramp(m, .75, 1)
       });
       var live = m > .97 && o < .03;
       if (live !== (r.getAttribute('data-live') === '1')) r.setAttribute('data-live', live ? '1' : '');
     });
   }
 
-  // The pitch shows (and takes clicks) only while the phone holds still.
-  function showPitch(o) {
-    pitch.style.setProperty('--o', o.toFixed(3));
-    pitch.style.pointerEvents = o > .5 ? '' : 'none';
+  // The pitch and the bridge show only while the phone holds still; the pitch takes clicks then.
+  function show(el, o) {
+    el.style.setProperty('--o', o.toFixed(3));
+    el.style.pointerEvents = o > .5 ? '' : 'none';
   }
 
   function updateGallery() {
+    var L = G || S;
+    if (!L) return;
+    var p = clamp((window.scrollY - galTop) / Math.max(galH - vh, 1), 0, 1);
     if (!G) {
-      if (!S) return;
       // stacked: one pinned screen; the scan plays and shrinks into a phone that holds
-      // under the pitch, then breaks into three small screens
-      var gr = gallery.getBoundingClientRect(), q = clamp(-gr.top / Math.max(gr.height - vh, 1), 0, 1);
-      var c = ease(ramp(q, .44, .52)), ph = S.phone;
-      playScan(ramp(q, 0, .42));
-      setVars(stage, { fo: ramp(q, .48, .53), sp: ramp(q, .72, .76) });
-      shrinkScan(c, ph, 34);
-      setVars(scan, { so: 1 - ramp(q, .72, .75) });
-      showPitch(ramp(q, .5, .55) * (1 - ramp(q, .69, .72)));
-      playReels(q, S, .72, .84, .95);
+      // under the pitch, then opens into the window and its three small screens
+      playScan(ramp(p, 0, .46));
+      setVars(stage, { fo: ramp(p, .51, .56), sp: ramp(p, .735, .755) });
+      shrinkScan(ease(ramp(p, .47, .54)), L.phone, 34);
+      setVars(scan, { so: 1 - ramp(p, .735, .755) });
+      show(pitch, ramp(p, .54, .58) * (1 - ramp(p, .62, .65)));
+      show(bridge, ramp(p, .645, .675) * (1 - ramp(p, .72, .745)));
+      show(aiHead, ramp(p, .78, .82) * (1 - ramp(p, .955, .975)));
+      playDesk(p, L, .735, .79, .95);
+      playReels(p, L, .795, .86, .95);
       return;
     }
-    var p = clamp((window.scrollY - galTop) / (galH - vh), 0, 1);
-    // the camera view shrinks into the phone, which holds beside the pitch,
-    // then breaks into three screens
-    var k = ease(ramp(p, .54, .61)), ph = G.phone;
-    setVars(stage, { fo: ramp(p, .57, .62), head: ramp(p, .6, .66), sp: ramp(p, .78, .82) });
-    playScan(ramp(p, .02, .5));
-    shrinkScan(k, ph, 40);
-    setVars(scan, { so: 1 - ramp(p, .78, .81) });
-    showPitch(ramp(p, .6, .65) * (1 - ramp(p, .75, .78)));
-    stage.classList.toggle('is-now', p > .78);
-    playReels(p, G, .78, .87, .955);
+    // the camera view shrinks into the phone, which holds beside the pitch, then
+    // "Love what you see?", then grows into HaneiAI's window and its three screens
+    setVars(stage, { fo: ramp(p, .58, .62), sp: ramp(p, .755, .775) });
+    playScan(ramp(p, .02, .54));
+    shrinkScan(ease(ramp(p, .55, .61)), L.phone, 40);
+    setVars(scan, { so: 1 - ramp(p, .755, .775) });
+    show(pitch, ramp(p, .61, .645) * (1 - ramp(p, .68, .71)));
+    show(bridge, ramp(p, .7, .73) * (1 - ramp(p, .79, .82)));
+    show(aiHead, ramp(p, .8, .84) * (1 - ramp(p, .955, .975)));
+    playDesk(p, L, .755, .81, .955);
+    playReels(p, L, .815, .87, .955);
   }
 
+  // the two product cards slide in from their own sides
   var duo = $('.duo');
   function updateDuo() {
     var r = duo.getBoundingClientRect();
     duo.style.setProperty('--v', ease(clamp((vh * .9 - r.top) / (vh * .5), 0, 1)).toFixed(4));
   }
 
-  function updateAround() {
-    var r = aroundHead.getBoundingClientRect();
-    aroundHead.style.setProperty('--h', ease(clamp((vh - r.top) / (vh * .7), 0, 1)).toFixed(4));
+  /* ---------------------------------------------------------- closing */
+  // the rest of the room slides in beside the one chair
+  var closeEl = $('[data-close]');
+  function updateClose() {
+    var r = closeEl.getBoundingClientRect();
+    closeEl.style.setProperty('--v', ease(clamp((vh * .95 - r.top) / (vh * .5), 0, 1)).toFixed(4));
   }
 
   /* ---------------------------------------------------------- book a demo */
@@ -489,53 +406,20 @@
     window.requestAnimationFrame(frame);
   }
 
-  /* ---------------------------------------------------------- torn paper */
-  function rng(seed) {
-    return function () { seed = seed * 16807 % 2147483647; return (seed - 1) / 2147483646; };
-  }
-  // A ripped top edge: a slow wave plus fine jitter, as a clip-path polygon.
-  // `wave` adds the slow curve; fiber and paper share a phase so the white rim follows it.
-  function tear(seed, base, amp, wave, phase) {
-    var r = rng(seed), pts = [], x = 0;
-    if (wave === undefined) { wave = amp * .5; phase = seed; }
-    while (x < 100) {
-      var y = base + Math.sin(x * .09 + phase) * wave + Math.sin(x * .21 + phase * 2) * wave * .25 + (r() - .5) * amp;
-      pts.push(x.toFixed(2) + '% ' + y.toFixed(1) + 'px');
-      x += .4 + r() * 1.4;
-    }
-    pts.push('100% ' + base + 'px', '100% 100%', '0% 100%');
-    return 'polygon(' + pts.join(',') + ')';
-  }
-  function cutTears() {
-    $$('.tear-edge').forEach(function (t, i) {
-      $('.tear__fiber', t).style.clipPath = tear(31 + i * 17, 10, 10);
-      $('.tear__paper', t).style.clipPath = tear(32 + i * 17, 17, 9);
-    });
-    stops.forEach(function (st, i) {
-      var phase = 1 + i * 2.1;
-      $('.stop__fiber', st).style.clipPath = tear(71 + i * 13, 30, 8, 22, phase);
-      $('.stop__paper', st).style.clipPath = tear(72 + i * 13, 37, 7, 22, phase);
-    });
-  }
-
   /* ---------------------------------------------------------- loop */
   function measure() {
     vw = window.innerWidth;
     vh = window.innerHeight;
-    layoutMess();
-    buildTrail();
     layoutGallery();
     update();
   }
 
   function update() {
     nav.classList.toggle('is-scrolled', window.scrollY > 8);
-    updateTrail();
     if (!moving()) return;
-    updateMess();
-    updateAround();
     updateGallery();
     updateDuo();
+    updateClose();
     updateDemo();
   }
 
@@ -554,18 +438,15 @@
   function onModeChange() {
     setMode();
     if (!moving()) {
-      [comp, stage1, aroundHead, duo, stage, scan, scanView, pitch].concat(reels, planLines, rows).forEach(function (el) { el.removeAttribute('style'); });
+      [duo, closeEl, stage, scan, scanView, pitch, bridge, aiHead, desk].concat(reels, rows).forEach(function (el) { el.removeAttribute('style'); });
       reels.forEach(function (r) { r.removeAttribute('data-live'); });
-      // these carry their own layout inline, so only clear what the animation set
-      flyers.forEach(function (el) { el.style.transform = ''; el.style.opacity = ''; });
-      stage.classList.remove('is-now');
       status.textContent = 'Looks right?';
     }
     measure();
   }
 
   setMode();
-  cutTears();
+  markTape();
   measure();
   window.addEventListener('scroll', onScroll, { passive: true });
   window.addEventListener('resize', onResize);
@@ -576,5 +457,9 @@
   // Heights settle as fonts and images arrive.
   if (window.ResizeObserver) new ResizeObserver(onResize).observe(document.body);
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(measure);
-  window.addEventListener('load', measure);
+  // the browser jumps to #ai before the anchor has moved to the screens, so go again
+  window.addEventListener('load', function () {
+    measure();
+    if (window.location.hash === '#ai') mark.scrollIntoView();
+  });
 })();
