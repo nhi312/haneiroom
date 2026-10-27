@@ -597,6 +597,18 @@ html:not(.pin):not(.motion) .frame { display: none; }
 .motion .bub__cursor { animation: bub-cursor 3s ease-in-out infinite; }
 @keyframes bub-scan { to { translate: 0 34px; } }
 @keyframes bub-cursor { 0%, 100% { translate: 0 0; } 40% { translate: -22px -4px; } 55% { translate: -22px -4px; } 56% { scale: .85; } 60% { scale: 1; } }
+/* a round sticker on HaneiAI's corner: who it's for */
+.bub__sticker {
+  position: absolute; z-index: 2; right: 150px; top: -46px; display: grid; place-content: center; gap: 2px;
+  width: 124px; aspect-ratio: 1; border-radius: 50%; rotate: 9deg; text-align: center;
+  background: var(--tape); color: var(--brown-900); box-shadow: 0 0 0 5px #fffdf8, 0 10px 18px rgba(30, 30, 60, .16);
+  opacity: calc(var(--v) * 2 - 1); scale: calc(.6 + var(--v) * .4);
+}
+.bub__sticker small { font: 800 9.5px/1.15 var(--font-body); letter-spacing: .1em; text-transform: uppercase; }
+.bub__sticker b { font: 400 21px/.95 var(--font-heading); }
+.motion .bub__sticker { animation: wiggle-sticker 5s ease-in-out infinite; }
+@keyframes wiggle-sticker { 0%, 84%, 100% { rotate: 9deg; } 88% { rotate: 3deg; } 92% { rotate: 13deg; } 96% { rotate: 7deg; } }
+
 /* HaneiAI's way in, under its list */
 .bub__try { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; margin-top: 14px; padding: 0 22px; border-radius: var(--radius-pill); font: 700 16px/20px var(--font-body); text-decoration: none; }
 .bub__try span { font-size: 14px; }
@@ -779,6 +791,9 @@ html:not(.pin):not(.motion) .frame { display: none; }
   .bub li::before { top: 7px; }
   .duo__both { font-size: 14px; line-height: 20px; padding: 10px 16px; border-radius: 22px; }
   .bub__try { margin-top: 12px; min-height: 40px; font-size: 15px; }
+  .bub__sticker { width: 92px; right: -2px; top: -40px; }
+  .bub__sticker small { font-size: 7.5px; }
+  .bub__sticker b { font-size: 16px; }
   .appstore { margin-top: 12px; padding: 6px 14px 6px 10px; }
   .appstore svg { width: 22px; height: 22px; }
   .appstore span { font-size: 17px; }
